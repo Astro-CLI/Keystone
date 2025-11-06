@@ -1,0 +1,16 @@
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore common editor and IDE folders
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Ignore log files
+*.log
