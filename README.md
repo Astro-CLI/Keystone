@@ -2,7 +2,7 @@
 
 [![Status](https://img.shields.io/badge/status-in_progress-brightgreen.svg)](https://github.com/Astro-CLI/Keystone)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Packet Tracer](https://img.shields.io/badge/Packet_Tracer-8.2.1-orange.svg)](#)
+[![Packet Tracer](https://img.shields.io/badge/Packet_Tracer-9.0.0-orange.svg)](#)
 
 > A project to build an enterprise network from scratch. For a class, for the challenge, and for the love of the game.
 
