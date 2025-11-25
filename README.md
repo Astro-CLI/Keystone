@@ -1,110 +1,103 @@
 # SOYMSA: A Networking Journey 🚀
 
-[![Status](https://img.shields.io/badge/status-beginning-brightgreen.svg)](https://github.com/Astro-CLI/Keystone)
+[![Status](https://img.shields.io/badge/status-in_progress-brightgreen.svg)](https://github.com/Astro-CLI/Keystone)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Packet Tracer](https://img.shields.io/badge/Packet_Tracer-8.2.1-orange.svg)](#)
 
-> "The best way to predict the future is to invent it." - Alan Kay
+> A project to build an enterprise network from scratch. For a class, for the challenge, and for the love of the game.
 
 ---
 
 ## 📖 Table of Contents
 
-- [The Vision](#-the-vision)
-- [The Story: A Legacy Reimagined](#-the-story-a-legacy-reimagined)
-- [The Goal: A Student's Time Machine](#-the-goal-a-students-time-machine)
-- [The Roadmap](#-the-roadmap)
-- [Guiding Principles](#-guiding-principles)
+- [The Mission](#-the-mission)
+- [The Backstory](#-the-backstory)
+- [The Goal: A Living Network Log](#-the-goal-a-living-network-log)
+- [The Game Plan](#-the-game-plan)
+- [My Rules of Engagement](#-my-rules-of-engagement)
 - [How to Follow Along](#-how-to-follow-along)
 - [License & Attribution](#-license--attribution)
-- [Acknowledgements](#-acknowledgements)
+- [Shoutouts](#-shoutouts)
 
 ---
 
-## 🔮 The Vision
+## 🔮 The Mission
 
-Welcome to the very beginning of a new digital life for **SOYMSA** (Sistemas, Organización y Métodos, Sociedad Anónima)!
+Welcome to the reboot of **SOYMSA** (Sistemas, Organización y Métodos, Sociedad Anónima).
 
-This repository marks the starting line for an ambitious academic project: to design, build, and document a comprehensive enterprise network from the ground up. This is not a finished project; it is a declaration of intent. Over the course of my college year, this space will evolve from a blank canvas into a fully realized network, with every step of the journey captured.
+This repo is where I'm building a full-scale enterprise network from the ground up. It's for a college course, but it's also a personal challenge. This isn't a finished product; it's the live log of a network's birth and evolution. Every commit is a step forward, a lesson learned, or a problem solved.
 
-The ultimate goal is to submit this work as a capstone to my studies, creating a valuable, open-source resource for fellow students along the way.
-
----
-
-## 📜 The Story: A Legacy Reimagined
-
-This project is more than just a technical exercise; it's a tribute to a real-world dream. In the early days of computing, my grandfather ran a company named SOYMSA. It was a pioneer, building specialized systems for businesses. As the tech landscape shifted with the rise of giants like Microsoft and Apple, SOYMSA's niche faded, and the company eventually closed its doors.
-
-My mission here is to bring the spirit of SOYMSA back to life in the modern era. This repository will serve as the foundation for a new, fictionalized SOYMSA, built on the principles of robust, secure, and scalable networking.
+The end goal? To have a killer project for my portfolio, and maybe create a resource that other students can actually use.
 
 ---
 
-## 🕰️ The Goal: A Student's Time Machine
+## 📜 The Backstory
 
-This repository *will become* a time machine. Every future commit will be a snapshot of a decision, a new piece of knowledge, or a lesson learned. My commitment is to document the entire thought process:
+This isn't just a random project. SOYMSA was a real company started by my grandfather back in the day. He was building custom systems for businesses before the big names took over. When the tech world changed, SOYMSA faded out.
 
--   Why *will* I choose a specific IP addressing scheme?
--   What *will be* the rationale behind my choice of routing protocols?
--   How *will* I design the security posture, and what trade-offs will I make?
-
-The aim is to create the resource I wish I had: a transparent, step-by-step guide written by a student, for students. You'll be able to follow along, examine the `.pkt` files at any stage of their evolution, and hopefully, use this as a blueprint for your own future projects.
+This project is my way of paying tribute to that legacy. I'm bringing the name back for a new, fictionalized SOYMSA, built on the kind of robust and secure network principles he would have appreciated. It's about connecting the past with the future.
 
 ---
 
-## 🗺️ The Roadmap & Project Structure
+## 🕰️ The Goal: A Living Network Log
 
-This project will evolve through a series of milestones, with each major step captured in a new Packet Tracer (`.pkt`) file. The file naming convention reflects this chronological progression: each new file contains all the work from the previous ones, plus the latest additions.
+Think of this repo as a time machine. Every commit is a snapshot. I'm documenting my entire thought process here, not just the final result.
 
-This makes it easy to see the project's evolution:
-1.  Start with `Core.pkt` to see the foundational core layer.
-2.  Move to `DMZ.pkt` to see the core layer *plus* the new DMZ.
-3.  A future file, like `DHCP.pkt`, will contain the core, the DMZ, *and* the new DHCP configurations.
-4.  ...and so on.
+-   Why did I pick this IP schema?
+-   What's the logic behind my routing protocol choice?
+-   How am I building the security posture, and what trade-offs am I making?
 
-The planned structure within the `SOYMSA/` directory will look something like this, with new files being added over time:
-
--   `Core.pkt`: The starting point. Contains the core routing and switching infrastructure.
--   `DMZ.pkt`: The second stage. Contains everything from `Core.pkt` + the new DMZ.
--   `Distribution.pkt` (Future): Will add the distribution layer.
--   `Access.pkt` (Future): Will add the access layer.
--   `...and more to come.`
-
-This structure is the key to the "time machine" concept, allowing anyone to step through the project's history milestone by milestone.
+I'm building the resource I wish I had: a transparent, no-BS guide written by a student, for students. You can grab any `.pkt` file from the history, see the network at that stage, and understand why it was built that way.
 
 ---
 
-## 🧭 Guiding Principles
+## 🗺️ The Game Plan
 
-Every decision in this project will be deliberate and documented. The "why" will be just as important as the "how."
+The project grows in stages. Each major milestone gets its own Packet Tracer (`.pkt`) file. The naming is chronological, so you can follow the evolution. Each new file contains everything from the previous one, plus the new stuff.
 
--   **Transparent Commits:** Each `git commit` will tell a story, explaining the changes made and the reasoning behind them. `git log` will be the chronicle of this journey.
--   **Detailed Documentation:** As the project grows, I will add detailed write-ups, covering key topics like security policies, IP schema, and VLAN configuration.
+It's like leveling up:
+1.  **`Core.pkt`**: The starting zone. Core routing and switching.
+2.  **`DMZ.pkt`**: Level 2. We add a DMZ to the core network.
+3.  **`Distribution.pkt` (Future)**: The next level, adding the distribution layer.
+4.  **`Access.pkt` (Future)**: And the access layer.
+5.  ...and so on. More levels will be added as I go.
+
+This structure is the key. It lets you walk through the project's history, one step at a time.
+
+---
+
+## 🧭 My Rules of Engagement
+
+Every decision here is deliberate. The "why" is just as important as the "how."
+
+-   **Transparent Commits:** Every `git commit` tells a story. `git log` is the project's chronicle. I'm explaining my moves, my reasoning, and my mistakes.
+-   **Real Documentation:** As things get more complex, I'll add detailed notes on security policies, IP schemas, VLANs, and anything else that needs explaining. No black boxes.
 
 ---
 
 ## 🤝 How to Follow Along
 
-While this is a personal academic project, I warmly invite you to follow its progress.
+This is my academic journey, but I'm running it like an open-source project. Feel free to tag along.
 
--   **Watch the repository:** Get notified of new changes and see the project grow in real-time.
--   **Fork the repository:** Feel free to create your own version of SOYMSA and experiment with it at any stage.
--   **Open an issue:** If you have questions or suggestions, don't hesitate to open an issue. All discussion is welcome.
+-   **Watch the repo:** Get notified when I push new changes.
+-   **Fork it:** Clone the repo and build your own version of SOYMSA. Experiment, break things, make it your own.
+-   **Open an issue:** Got a question or a suggestion? Hit me up in the issues. Let's talk shop.
 
 ---
 
 ## 📜 License & Attribution
 
-This project is licensed under the **Apache License 2.0**. You can find the full license text in the `LICENSE` file.
+This project is under the **Apache License 2.0**. The full license is in the `LICENSE` file.
 
-This license allows you to freely use, modify, and distribute this work. However, as a student creating this for educational purposes, I would personally and deeply appreciate it if you would **cite this GitHub repository as a source** if you use it for your own college or university projects. This is not a legal requirement of the license, but a simple, friendly request. Thank you!
+You're free to use, modify, and share this work. But since I'm a student building this for my education, I'd personally appreciate it if you **cite this repo as a source** if you use it for your own school projects. It's not a legal thing, just a friendly request. Thanks.
 
 ---
 
-## 🙏 Acknowledgements
+## 🙏 Shoutouts
 
--   To my grandfather, for inspiring the story of SOYMSA.
--   To my professors and classmates, who will guide and support me on this journey.
--   To the open-source community, for showing me the power of sharing knowledge.
+-   To my grandfather, for the original SOYMSA story.
+-   To my professors and classmates, for the guidance and feedback.
+-   To the open-source world, for teaching me that sharing knowledge is the best way to learn.
 
 ---
 
