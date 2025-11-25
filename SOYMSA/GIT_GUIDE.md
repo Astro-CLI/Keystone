@@ -114,6 +114,43 @@ That's the whole workflow. Your progress is saved and documented.
 
 ---
 
+## 3. Keeping Secrets Out of Your Code
+
+This is critically important. Never, ever commit sensitive information to your repository. This includes:
+
+-   Private SSH keys (`id_rsa`, `id_ed25519`)
+-   API keys
+-   Passwords
+-   Configuration files with credentials
+
+Once something is committed to Git, it can be very difficult to remove it completely from the history. Even if you delete the file in a later commit, the original commit still exists in the repository's history.
+
+### Best Practices
+
+1.  **Store Keys Properly**: SSH keys belong in your `~/.ssh/` directory, not in your project folder. This is the default and most secure location.
+
+2.  **Use `.gitignore`**: If for some reason you must have a sensitive file in your project directory, add its name to the `.gitignore` file *before* you ever commit it. This tells Git to ignore the file and never track it.
+
+    For example, to ignore all files starting with `id_ed25519`, you would add this line to your `.gitignore` file:
+
+    ```
+    id_ed25519*
+    ```
+
+3.  **Check Before You Commit**: Always run `git status` before you run `git add .`. Make sure you are not about to stage sensitive files.
+
+### What If I Mess Up?
+
+If you suspect you might have committed a key, you can search your repository's history. This command searches the entire history of your repository for the phrase "PRIVATE KEY":
+
+```bash
+git rev-list --all | xargs -n1 git grep -i "PRIVATE KEY"
+```
+
+If this command returns any results, you have a problem. The best solution is to consider that key compromised, generate a new one, and update any systems that used the old key.
+
+---
+
 ## The TL;DR Workflow
 
 When you're in the zone, here are the commands back-to-back:
