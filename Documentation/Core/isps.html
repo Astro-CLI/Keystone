@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISP Information</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&family=Outfit:wght@400;700&family=Orbitron:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+body {
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    font-family: 'Ubuntu', sans-serif;
+    color: #005a9c;
+    border-bottom: 2px solid #005a9c;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+thead {
+    background-color: #005a9c;
+    color: #fff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+p {
+    font-family: 'Outfit', sans-serif; /* Ensure paragraphs use Outfit */
+    background-color: #e9ecef;
+    padding: 15px;
+    border-left: 4px solid #005a9c;
+    border-radius: 4px;
+}
+
+p.comment {
+    font-family: 'Outfit', sans-serif; /* Outfit for comments/side notes */
+    font-style: italic;
+    color: #555;
+}
+
+code {
+    font-family: 'Orbitron', monospace;
+    background-color: #fff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+    </style>
+</head>
+<body>
+    <h1>ISP Information for Networking Project</h1>
+
+    <h2>General Information</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ISP</th>
+                <th>Country</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Movistar</td>
+                <td>Argentina</td>
+                <td>Buenos Aires</td>
+            </tr>
+            <tr>
+                <td>Cellcom</td>
+                <td>Israel</td>
+                <td>Netanya</td>
+            </tr>
+            <tr>
+                <td>AT&T</td>
+                <td>United States</td>
+                <td>Frisco, Texas</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>BGP Autonomous System Numbers</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ASN</th>
+                <th>ISP</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>AS10834</td>
+                <td>Movistar</td>
+            </tr>
+            <tr>
+                <td>AS1680</td>
+                <td>Cellcom</td>
+            </tr>
+            <tr>
+                <td>AS7018</td>
+                <td>AT&T</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Router Naming Scheme</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Router Name</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>R-AR-BA</td>
+                <td>Argentina, Buenos Aires</td>
+            </tr>
+            <tr>
+                <td>R-IL-N</td>
+                <td>Israel, Netanya</td>
+            </tr>
+            <tr>
+                <td>R-TX-F</td>
+                <td>Texas, Frisco</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="comment"><strong>Guideline:</strong> First letter is the Device Type separated by a <code>-</code>, next is the country / State that it is located at, again separated by a <code>-</code>, and lastly the name of the City. For deeper nesting, add more <code>-</code> and levels (e.g., City, Building, Floor, Department).</p>
+
+    <h2>Router IP Addresses</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Interface</th>
+                <th>IP Address</th>
+                <th>ISP</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>loopback 0</td>
+                <td>200.0.224.1/32</td>
+                <td>Movistar</td>
+            </tr>
+            <tr>
+                <td>loopback 0</td>
+                <td>82.166.0.1/32</td>
+                <td>Cellcom</td>
+            </tr>
+            <tr>
+                <td>loopback 0</td>
+                <td>70.244.0.1/32</td>
+                <td>AT&T</td>
+            </tr>
+        </tbody>
+        </table>
+    
+        <h2>Loopback Interface Guideline</h2>
+        <p>
+            A loopback interface is a virtual, software-only interface that is always up and available, regardless of the state of any physical interfaces. This makes it ideal for management and routing purposes.
+        </p>
+        <p>
+            <strong>Naming Interfaces:</strong> While not a universal command, on some platforms like Cisco ASA, <code>name-if</code> is used to assign a logical name to an interface, making it easier to reference in configurations. For example, you could name your loopback 0 interface as <code>name-if loopback0</code>.
+        </p>
+        <p>
+            <strong>Public vs. Private IPs:</strong> It's a common practice to assign a stable, public IP address to the <code>loopback 0</code> interface. This IP can serve as the router's unique identifier for management (SSH, SNMP) and for routing protocols like BGP. Since the loopback is always up, the router remains reachable as long as any of its physical interfaces are active. Physical interfaces that connect to other internal network devices can then use private IP addresses (RFC 1918) to conserve public IP address space.
+        </p>
+        <p class="comment">
+            In summary: Use a public IP on <code>loopback 0</code> for stable management and routing, and private IPs on other interfaces for internal communication.
+        </p>

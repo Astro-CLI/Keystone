@@ -1,0 +1,45 @@
+# ISP Information for Networking Project
+
+## General Information
+
+| ISP      | Country         | City          |
+|----------|-----------------|---------------|
+| Movistar | Argentina       | Buenos Aires  |
+| Cellcom  | Israel          | Netanya       |
+| AT&T     | United States   | Frisco, Texas |
+
+## BGP Autonomous System Numbers
+
+| ASN      | ISP      |
+|----------|----------|
+| AS10834  | Movistar |
+| AS1680   | Cellcom  |
+| AS7018   | AT&T     |
+
+## Router Naming Scheme
+
+| Router Name | Location                |
+|-------------|-------------------------|
+| R-AR-BA     | Argentina, Buenos Aires |
+| R-IL-N      | Israel, Netanya         |
+| R-TX-F      | Texas, Frisco           |
+
+**Guideline:** First letter is the Device Type separated by a `-`, next is the country / State that it is located at, again separated by a `-`, and lastly the name of the City. For deeper nesting, add more `-` and levels (e.g., City, Building, Floor, Department).
+
+## Router IP Addresses
+
+| Interface   | IP Address      | ISP      |
+|-------------|-----------------|----------|
+| loopback 0  | 200.0.224.1/32  | Movistar |
+| loopback 0  | 82.166.0.1/32   | Cellcom  |
+| loopback 0  | 70.244.0.1/32   | AT&T     |
+
+## Loopback Interface Guideline
+
+A loopback interface is a virtual, software-only interface that is always up and available, regardless of the state of any physical interfaces. This makes it ideal for management and routing purposes.
+
+**Naming Interfaces:** While not a universal command, on some platforms like Cisco ASA, `name-if` is used to assign a logical name to an interface, making it easier to reference in configurations. For example, you could name your loopback 0 interface as `name-if loopback0`.
+
+**Public vs. Private IPs:** It's a common practice to assign a stable, public IP address to the `loopback 0` interface. This IP can serve as the router's unique identifier for management (SSH, SNMP) and for routing protocols like BGP. Since the loopback is always up, the router remains reachable as long as any of its physical interfaces are active. Physical interfaces that connect to other internal network devices can then use private IP addresses (RFC 1918) to conserve public IP address space.
+
+**Summary:** Use a public IP on `loopback 0` for stable management and routing, and private IPs on other interfaces for internal communication.
