@@ -151,6 +151,27 @@ If this command returns any results, you have a problem. The best solution is to
 
 ---
 
+## 4. Repository Structure
+
+To keep the project organized, files are stored in specific directories. Here's a quick rundown of what you'll find where:
+
+-   **`/` (Root Directory)**
+    -   `README.md`: The main entry point for understanding the project.
+    -   `LICENSE`: The Apache 2.0 license file.
+    -   `.gitignore`: Standard file for ignoring files that shouldn't be in the repo.
+
+-   **`Documentation/`**
+    -   This is where all written documentation, diagrams, and supplementary materials go. It's broken down into subdirectories that mirror the network's structure (Core, Distribution, Access).
+
+-   **`Resources/`**
+    -   A place for any external resources, templates, or other assets that are useful for the project but aren't part of the core network or documentation.
+
+-   **`SOYMSA/`**
+    -   The heart of the project. This directory contains the Packet Tracer (`.pkt`) files that represent the different stages of the network build.
+    -   `GIT_GUIDE.md`: The file you're reading right now.
+
+---
+
 ## The TL;DR Workflow
 
 When you're in the zone, here are the commands back-to-back:

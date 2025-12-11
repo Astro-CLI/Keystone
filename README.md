@@ -14,6 +14,7 @@
 - [The Backstory](#-the-backstory)
 - [The Goal: A Living Network Log](#-the-goal-a-living-network-log)
 - [The Game Plan](#-the-game-plan)
+- [Repository Structure](#-repository-structure)
 - [My Rules of Engagement](#-my-rules-of-engagement)
 - [How to Follow Along](#-how-to-follow-along)
 - [License & Attribution](#-license--attribution)
@@ -63,6 +64,20 @@ It's like leveling up:
 5.  ...and so on. More levels will be added as I go.
 
 This structure is the key. It lets you walk through the project's history, one step at a time.
+
+---
+
+## 📂 Repository Structure
+
+This repository is organized to be as clear as possible. Here’s where to find everything:
+
+-   `/` (Root Directory): You'll find this `README.md`, the `LICENSE`, and the top-level configuration for the repository.
+
+-   `SOYMSA/`: This is the core of the project. It contains all the Cisco Packet Tracer (`.pkt`) files, which represent the different stages of the network's development.
+
+-   `Documentation/`: All supporting documentation lives here. This includes detailed explanations of network topology, IP schemas, security policies, and diagrams. The subdirectories (`Core`, `Distribution`, `Access`) mirror the network's structure.
+
+-   `Resources/`: A directory for any external assets, templates, or supplementary materials that are part of the project but don't fit into the other categories.
 
 ---
 
