@@ -1,220 +1,277 @@
-# SOYMSA – פרויקט גמר 🚀
+# SOYMSA: A Networking Journey 🚀
 
 [![Status](https://img.shields.io/badge/status-in_progress-brightgreen.svg)](https://github.com/Astro-CLI/Keystone)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Packet Tracer](https://img.shields.io/badge/Packet_Tracer-9.0.0-orange.svg)](#)
 
----
-
-## 📖 תוכן עניינים
-
-- [נושא הפרויקט](#-נושא-הפרויקט)
-- [מבוא](#-מבוא)
-- [תקציר תוכן הפרויקט](#-תקציר-תוכן-הפרויקט)
-- [אודות SOYMSA](#-אודות-soymsa)
-- [מה אנחנו עושים?](#-מה-אנחנו-עושים)
-- [למה לבחור בנו?](#-למה-לבחור-בנו)
-- [תיאור פריסת הסניפים ורשת החברה](#-תיאור-פריסת-הסניפים-ורשת-החברה)
-- [תשתית האינטרנט הגלובלית (WAN Core)](#-תשתית-האינטרנט-הגלובלית-wan-core)
-- [מבנה המאגר](#-מבנה-המאגר)
-- [רישיון](#-רישיון)
+> Building a global Cloud Services infrastructure and advanced cybersecurity for **SOYMSA** — reviving a family legacy in the digital age.
 
 ---
 
-## 🎯 נושא הפרויקט
+## 📖 Table of Contents
 
-**הקמת תשתית ענן (Cloud Services) גלובלית ואבטחת מידע מתקדמת עבור חברת SOYMSA – חידוש מורשת משפחתית בעידן הדיגיטלי.**
+- [The Mission](#-the-mission)
+- [The Backstory](#-the-backstory)
+- [Project Overview](#-project-overview)
+- [About SOYMSA](#-about-soymsa)
+- [What We Do](#-what-we-do)
+- [Why Choose Us?](#-why-choose-us)
+- [Branch Deployment & Network Architecture](#-branch-deployment--network-architecture)
+- [The Global Internet Backbone (WAN Core)](#-the-global-internet-backbone-wan-core)
+- [Network Automation](#-network-automation)
+- [The Goal: A Living Network Log](#-the-goal-a-living-network-log)
+- [The Game Plan](#-the-game-plan)
+- [Repository Structure](#-repository-structure)
+- [My Rules of Engagement](#-my-rules-of-engagement)
+- [How to Follow Along](#-how-to-follow-along)
+- [License & Attribution](#-license--attribution)
+- [Shoutouts](#-shoutouts)
 
 ---
 
-## 📜 מבוא
+## 🔮 The Mission
 
-בחרתי להקים את חברת **SOYMSA** (ראשי תיבות של: Sistemas, Organización y Métodos. Sociedad Anónima) מתוך חיבור אישי עמוק והערכה למורשת המקצועית של סבי. החברה המקורית פעלה עוד בתקופה שקדמה לעידן ה-Windows, והציעה פתרונות ניהול וארגון שהקדימו את זמנם. בפרויקט זה, בחרתי "להחיות" את המותג המשפחתי ולהפוך אותו לחברת שירותי ענן בינלאומית, השואבת השראה מהיסודות הארגוניים שסבי הניח, ומשלבת אותם בטכנולוגיות המתקדמות ביותר של המאה ה-21: תקשורת נתונים מורכבת (Networking), אבטחת סייבר (Cyber Security) ואוטומציה.
+Welcome to the reboot of **SOYMSA** (*Sistemas, Organización y Métodos, Sociedad Anónima*).
 
-הפרויקט עוסק בתכנון והקמה של רשת ארגונית מקיפה המדמה תשתית ענן גלובלית הנדרשת לזמינות מרבית (High Availability), יתירות מלאה וניהול חכם. מעבר להיבט הטכנולוגי, הפרויקט מבטיח המשכיות עסקית (Business Continuity) עבור לקוחות הענן של החברה, תוך הגנה קפדנית על נכסי מידע רגישים במרחב הציבורי.
+This repo is where I'm building a full-scale enterprise network from the ground up — simulating a real global Cloud Services provider. It's for a college course, but it's also a personal challenge. This isn't a finished product; it's the live log of a network's birth and evolution. Every commit is a step forward, a lesson learned, or a problem solved.
 
-מטרותיי האישיות הן להעמיק את הידע המעשי בניהול רשתות ברמת ספקיות תקשורת (ISP), תפעול חומות אש (Firewalls) מורכבות, והטמעת תפיסות מודרניות של תכנות בתוך עולם התקשורת. עבורי, פרויקט זה אינו רק משימה אקדמית המסכמת חמש שנות לימוד, אלא סגירת מעגל מקצועית וכרטיס כניסה משמעותי לתעשיית ההייטק כמומחה תקשורת ואבטחה.
-
-**מבנה העבודה כולל:**
-- פירוט דרישות הארגון
-- ארכיטקטורת רשת היררכית
-- ניתוב הליבה מול ספקיות גלובליות
-- יישום מערכות אבטחה ואוטומציה
+The end goal? To have a killer project for my portfolio, and maybe create a resource that other students can actually use.
 
 ---
 
-## 📋 תקציר תוכן הפרויקט
+## 📜 The Backstory
 
-הפרויקט מציג סימולציה מקיפה של רשת חברת SOYMSA באמצעות תוכנת **Cisco Packet Tracer**. תכנון הרשת מתבסס על ארכיטקטורה שרידה בשלושה סניפים גיאוגרפיים שונים, המחוברים לשדרת האינטרנט העולמית (WAN Core) דרך שלוש ספקיות תקשורת אותנטיות:
+This isn't just a random project. SOYMSA was a real company started by my grandfather back in the day — before the Windows era. He was building custom organizational and management systems for businesses before the big names took over. When the tech world changed, SOYMSA faded out.
+
+This project is my way of paying tribute to that legacy. I'm bringing the name back for a new, fictionalized SOYMSA, transformed from a traditional consulting firm into a cutting-edge cloud technology company. I'm applying his principles of order and organization inside the routing tables and code of modern internet networks. It's about connecting the past with the future.
+
+---
+
+## 📋 Project Overview
+
+This project presents a comprehensive simulation of the SOYMSA corporate network using **Cisco Packet Tracer**. The network design is built on a resilient architecture spanning three geographically separate branches, connected to the global internet backbone (WAN Core) through three authentic ISPs:
 
 - **Movistar** (AS10834)
 - **Cellcom** (AS1680)
 - **AT&T** (AS7018)
 
-הקישוריות בין הסניפים מבוססת על פרוטוקול הניתוב החיצוני **eBGP**, המבטיח ניתוב אופטימלי ויתירות מלאה במקרה של נפילת ספק. בתוך הסניפים מיושם **מודל שלושת השכבות של סיסקו** (Access, Distribution, Core) המבטיח ניהול יעיל של תעבורה וגמישות בהתרחבות עתידית.
+Inter-branch connectivity is based on the **eBGP** routing protocol, ensuring optimal routing and full redundancy in the event of an ISP failure. Within each branch, Cisco's **three-layer hierarchical model** (Access, Distribution, Core) is implemented for efficient traffic management and scalability.
 
-מבנה הרשת שם דגש עליון על **אבטחת מידע**. בנקודת היציאה של הארגון מוצב פיירוול מסוג **Cisco ASA 5506-X**, המשמש כחוצץ קריטי בין:
-- הרשת הפנימית המאובטחת (Inside)
-- אזור שירותי הענן (DMZ)
-- רשת האינטרנט (Outside)
+Security is a top priority. At the organization's perimeter sits a **Cisco ASA 5506-X** firewall, acting as the critical buffer between:
+- The secure internal network (Inside)
+- The cloud services zone (DMZ)
+- The public internet (Outside)
 
-ה-ASA מנהל תרגום כתובות (NAT) מתקדם, כולל **Static NAT** לשרתים ו-**PAT (NAT Overload)** למשתמשים, ומיישם חוקי גישה קפדניים (ACL) מבוססי אובייקטים (Object Groups).
-
-בנוסף, הפרויקט משלב **אוטומציה מודרנית (Network Automation)**, המאפשרת ניהול הגדרות חכם דרך בקר מרכזי, צעד המקטין טעויות אנוש ומייעל את תחזוקת הענן. השירותים בארגון, הכוללים שרתי **DNS, WEB, FTP ו-VPN**, ינוהלו בקפידה כדי להבטיח חוויית תקשורת יציבה, מהירה ומוגנת לכל משתמשי הקצה והלקוחות.
+The ASA handles advanced NAT — **Static NAT** for servers and **PAT (NAT Overload)** for end users — and enforces strict Object Group-based **ACL** policies. Core services including **DNS, Web, FTP, and VPN** servers are carefully managed to deliver a stable, fast, and protected communication experience for all end users and clients.
 
 ---
 
-## 🏢 אודות SOYMSA
+## 🏢 About SOYMSA
 
-### מי אנחנו?
+### Who We Are
 
-חברת **SOYMSA** (ראשי תיבות של: Sistemas, Organización y Métodos. Sociedad Anónima) היא ספקית שירותי ענן (Cloud Services) ואבטחת מידע גלובלית, המקימה ומנהלת תשתיות תקשורת קריטיות לארגונים בינלאומיים. החברה משלבת בין ניסיון ארגוני עמוק לבין טכנולוגיות הדור הבא בעולמות ה-Networking וה-Cyber.
+**SOYMSA** (*Sistemas, Organización y Métodos, Sociedad Anónima*) is a global Cloud Services and cybersecurity provider that builds and manages critical communication infrastructures for international organizations. The company blends deep organizational experience with next-generation Networking and Cyber technologies.
 
-### היסטוריה קצרה
+### A Brief History
 
-החברה הוקמה במקור על ידי סבי עוד בתקופה שקדמה לעידן ה-Windows, והתמחתה במערכות ארגוניות, סדר ושיטות ניהול (מכאן שמה: "מערכות, ארגון ושיטות"). בשנת 2025, כחלק מפרויקט הגמר שלי, החלטתי להחיות את המותג המשפחתי ולבצע לו **טרנספורמציה דיגיטלית מלאה**. הפכתי את SOYMSA מחברת ייעוץ ארגוני מסורתית לחברת טכנולוגיית ענן מתקדמת, המיישמת את עקרונות הסדר והארגון של סבי בתוך שורות הקוד והניתוב של רשתות האינטרנט המודרניות.
+The company was originally founded by my grandfather before the Windows era, specializing in organizational systems, order, and management methodologies (hence the name: "Systems, Organization and Methods"). In 2025, as part of my final project, I decided to revive the family brand and perform a **full digital transformation** — turning SOYMSA from a traditional consulting firm into an advanced cloud technology company that embeds his principles of order and structure into the routing and code of modern internet networks.
 
-### חזון וערכים
+### Vision & Values
 
-החזון של SOYMSA הוא להוות את עמוד השדרה הטכנולוגי עבור לקוחותיה, תוך הבטחת המשכיות עסקית (Business Continuity) וזמינות מרבית של **99.99%**.
+SOYMSA's vision is to serve as the technological backbone for its clients, ensuring **Business Continuity** and maximum availability of **99.99% uptime**.
 
-**הערכים המובילים אותנו:**
-- **מורשת של מצוינות** – הישענות על יסודות ארגוניים מוכחים
-- **חדשנות טכנולוגית** – אימוץ פרוטוקולים וכלים מהחזית
-- **אבטחה ללא פשרות** – הגנה קפדנית על כל שכבות המידע
-- **יתירות מלאה** – אין נקודת כשל בודדת בכל שכבות הרשת
+**Our core values:**
+- **Legacy of Excellence** — building on proven organizational foundations
+- **Technological Innovation** — embracing cutting-edge protocols and tools
+- **Uncompromising Security** — rigorous protection across all layers of data
+- **Full Redundancy** — no single point of failure at any layer of the network
 
-### מומחיות
+### Expertise
 
-המומחיות של SOYMSA טמונה בבניית רשתות WAN מורכבות המבוססות על פרוטוקול BGP וחיבור ישיר לשדרת האינטרנט העולמית. אנו מתמחים ב:
-- ניהול חוות שרתים (Data Centers)
-- יישום חומות אש מתקדמות (Cisco ASA)
-- אופטימיזציה של תעבורה באמצעות ניתוב היררכי
-- שילוב בין IPv4 ל-IPv6
+SOYMSA specializes in building complex WAN networks based on BGP and direct connectivity to the global internet backbone. Our areas of expertise include:
+- Managing server farms and Data Centers
+- Deploying advanced firewalls (Cisco ASA)
+- Traffic optimization through hierarchical routing
+- Dual-stack IPv4 / IPv6 environments
 
-### הצוות
+### The Team
 
-הצוות המקצועי של SOYMSA מורכב מאנשי מקצוע בתחומי הנדסת הרשתות, אבטחת הסייבר ואוטומציה, המשלבים ידע תיאורטי נרחב עם יכולות ביצוע סימולציות מורכבות.
-
----
-
-## 🛠️ מה אנחנו עושים?
-
-### מוצרים ושירותים
-
-- **שירותי אחסון וניהול קבצים מאובטחים:** שרת ה-FTP וה-TFTP בארגון מאפשרים גיבוי והעברת נתונים מוצפנת.
-- **ניהול זהויות מרכזי (AAA):** אימות והרשאה קפדניים לכל עובדי ולקוחות החברה.
-- **תשתית ענן מבוזרת:** שירותי DNS ו-Web המונגשים ללקוחות דרך אזור DMZ מאובטח ומתרגם כתובות (NAT).
-- **קישוריות מאובטחת:** הקמת מנהרות VPN (Site-to-Site) לחיבור בטוח בין סניפי החברה וספקי הענן.
-
-### הערך המוסף
-
-SOYMSA מעניקה ללקוחותיה יציבות גלובלית דרך שלוש מדינות שונות (ישראל, ארגנטינה, ארצות הברית), תוך שימוש בספקיות אינטרנט אמיתיות כמו Movistar, Cellcom ו-AT&T.
-
-### לקוחות
-
-לקוחותינו הם:
-- **תאגידים רב-לאומיים** הזקוקים לתשתית תקשורת גלובלית אמינה
-- **חברות סטארט-אפ** הנדרשות לשירותי ענן שרידים
-- **גופים ממשלתיים** הזקוקים להפרדת רשתות קפדנית ואבטחת היקף (Perimeter Security)
+The SOYMSA professional team is composed of specialists in network engineering, cybersecurity, and automation, combining extensive theoretical knowledge with the ability to execute complex, production-grade simulations.
 
 ---
 
-## 🏆 למה לבחור בנו?
+## 🛠️ What We Do
 
-### יתרונות תחרותיים
+### Products & Services
 
-- **יתירות כפולה:** שימוש בפרוטוקול HSRP בשכבה ה-3 ו-STP/EtherChannel בשכבה ה-2 למניעת נפילות.
-- **הגנת סייבר רב-שכבתית:** שימוש ב-ASA Firewall, Port Security, ו-DHCP Snooping למניעת התקפות.
-- **חדשנות בניתוב:** יישום OSPF Multi-Area כולל Virtual Link לקישור אזורים מרוחקים.
+- **Secure File Hosting & Transfer:** FTP and TFTP servers enable encrypted backup and data transfer.
+- **Centralized Identity Management (AAA):** Strict authentication and authorization for all employees and clients.
+- **Distributed Cloud Infrastructure:** DNS and Web services delivered to clients through a secured, NAT-translated DMZ zone.
+- **Secure Connectivity:** Site-to-Site VPN tunnels for encrypted communication between branches and cloud providers.
 
-### הצלחות
+### Value Proposition
 
-- הקמת סימולציה מקיפה ב-Cisco Packet Tracer המדמה פעילות עסקית מלאה בשלושה סניפים.
-- הטמעה מוצלחת של פרוטוקול הניתוב BGP לקישור בין יבשות.
-- יצירת שירותי דואר אלקטרוני (Email Server) ודפי אינטרנט פנימיים המעוצבים ב-HTML.
+SOYMSA delivers global stability across three countries (Israel, Argentina, and the United States), leveraging real-world ISPs like Movistar, Cellcom, and AT&T to simulate authentic internet peering.
 
-### הבטחות
+### Our Clients
 
-SOYMSA מתחייבת לניהול רשת חכם, אבטחת מידע ברמה הגבוהה ביותר ותמיכה טכנולוגית המכבדת את המורשת המקצועית של העבר תוך מבט אל העתיד הדיגיטלי.
+- **Multinational corporations** requiring reliable global communication infrastructure
+- **Startups** needing resilient cloud services
+- **Government entities** requiring strict network segmentation and Perimeter Security
 
 ---
 
-## 🗺️ תיאור פריסת הסניפים ורשת החברה
+## 🏆 Why Choose Us?
 
-רשת החברה מתוכננת על פי **מודל שלושת השכבות של סיסקו**:
+### Competitive Advantages
 
-| שכבה | שם | תפקיד |
+- **Dual Redundancy:** HSRP at Layer 3 and STP/EtherChannel at Layer 2 to prevent network downtime.
+- **Multi-Layer Cyber Defense:** ASA Firewall, Port Security, and DHCP Snooping to block common attacks.
+- **Routing Innovation:** OSPF Multi-Area with Virtual Links to connect geographically dispersed zones.
+
+### Achievements
+
+- Built a full-scale Cisco Packet Tracer simulation covering complete business operations across three branches.
+- Successfully implemented BGP inter-continental routing between branches.
+- Created internal Email Server infrastructure and HTML-designed internal web portals.
+
+### Our Promise
+
+SOYMSA is committed to intelligent network management, the highest level of information security, and technical support that honors the professional legacy of the past while looking toward the digital future.
+
+---
+
+## 🗺️ Branch Deployment & Network Architecture
+
+The network is designed around **Cisco's three-layer hierarchical model**:
+
+| Layer | Name | Role |
 |---|---|---|
-| **Core** | שכבת הליבה | שדרה מהירה המקשרת בין הסניפים ויוצאת ל-WAN דרך BGP |
-| **Distribution** | שכבת ההפצה | ניתוב Inter-VLAN, יתירות HSRP, וסינון תעבורה באמצעות ACL |
-| **Access** | שכבת הגישה | חיבור משתמשי קצה, מדפסות ונקודות גישה אלחוטיות תוך אכיפת Port Security |
+| **Core** | Core Layer | High-speed backbone connecting branches; exits to the WAN via BGP |
+| **Distribution** | Distribution Layer | Inter-VLAN routing, HSRP redundancy, and ACL traffic filtering |
+| **Access** | Access Layer | Connects end users, printers, and wireless APs with Port Security enforcement |
 
-### סניפי החברה
+### Our Three Branches
 
-לחברת SOYMSA **שלושה סניפים מרכזיים**:
-
-- 🇦🇷 **בואנוס איירס** – הסניף הראשי וחוות השרתים.
-- 🇮🇱 **נתניה** – סניף הנהלת הענן המבוסס על VLSM.
-- 🇺🇸 **פריסקו, טקסס** – סניף מחקר המבוסס כולו על כתובות IPv6.
+- 🇦🇷 **Buenos Aires** — Headquarters and primary server farm.
+- 🇮🇱 **Netanya** — Cloud management branch, IP addressing based on VLSM.
+- 🇺🇸 **Frisco, Texas** — R&D branch, built entirely on IPv6 addressing.
 
 ---
 
-## 🌐 תשתית האינטרנט הגלובלית (WAN Core)
+## 🌐 The Global Internet Backbone (WAN Core)
 
-### ספקיות התקשורת (ISPs)
+### ISP Core Routers
 
-| ספק / נתב | מספר AS | כתובת IP של הנתב |
+| ISP / Router | AS Number | Core Router IP |
 |---|---|---|
 | **Telefónica de Argentina (Movistar)** | AS10834 | 200.0.224.1 |
 | **Cellcom Fixed Line Comm.** | AS1680 | 82.166.0.1 |
 | **AT&T Enterprises, LLC** | AS7018 | 70.244.0.1 |
 
-> * כתובות ה-IP נגזרות מ: Telefónica (200.0.224.0/24), Cellcom (82.166.0.0/16), ו-AT&T (70.244.0.0/14).
+> * IPs are derived from real allocated ranges: Telefónica (200.0.224.0/24), Cellcom (82.166.0.0/16), AT&T (70.244.0.0/14).
 
-### טבלת Peering – BGP בין-ספקי (Loopback Method)
+### eBGP Inter-Carrier Peering Table (Loopback Method)
 
-| נתב (AS) | ממשק | IP מקומי | רשת ליבה (Loopback 0 /32) | IP עמית / AS מרוחק |
+| Router (AS) | Interface | Local IP | Core Network (Loopback 0 /32) | Peer IP / Remote AS |
 |---|---|---|---|---|
-| **Movistar (AS10834)** | Loopback 0 | – | 200.0.224.1 | (רשת מפורסמת) |
-| | Gi0/0 (ל-Cellcom) | 10.1.1.5 | – | 10.1.1.6 / AS1680 |
-| | Gi0/1 (ל-AT&T) | 10.1.1.9 | – | 10.1.1.10 / AS7018 |
-| **Cellcom (AS1680)** | Loopback 0 | – | 82.166.0.1 | (רשת מפורסמת) |
-| | Gi0/0 (ל-Movistar) | 10.1.1.6 | – | 10.1.1.5 / AS10834 |
-| | Gi0/1 (ל-AT&T) | 10.1.1.1 | – | 10.1.1.2 / AS7018 |
-| **AT&T (AS7018)** | Loopback 0 | – | 70.244.0.1 | (רשת מפורסמת) |
-| | Gi0/0 (ל-Movistar) | 10.1.1.10 | – | 10.1.1.9 / AS10834 |
-| | Gi0/1 (ל-Cellcom) | 10.1.1.2 | – | 10.1.1.1 / AS1680 |
+| **Movistar (AS10834)** | Loopback 0 | — | 200.0.224.1 | (Advertised Network) |
+| | Gi0/0 (To Cellcom) | 10.1.1.5 | — | 10.1.1.6 / AS1680 |
+| | Gi0/1 (To AT&T) | 10.1.1.9 | — | 10.1.1.10 / AS7018 |
+| **Cellcom (AS1680)** | Loopback 0 | — | 82.166.0.1 | (Advertised Network) |
+| | Gi0/0 (To Movistar) | 10.1.1.6 | — | 10.1.1.5 / AS10834 |
+| | Gi0/1 (To AT&T) | 10.1.1.1 | — | 10.1.1.2 / AS7018 |
+| **AT&T (AS7018)** | Loopback 0 | — | 70.244.0.1 | (Advertised Network) |
+| | Gi0/0 (To Movistar) | 10.1.1.10 | — | 10.1.1.9 / AS10834 |
+| | Gi0/1 (To Cellcom) | 10.1.1.2 | — | 10.1.1.1 / AS1680 |
 
-> * הגדרה זו משתמשת בממשקי Loopback לשם יציבות BGP וייצוג רשת הליבה, בהתאם לשיטות עבודה מומלצות בסימולציות ספקיות תקשורת.
-
-### אוטומציה של תהליכי רשת (Network Automation)
-
-בעידן ה-**Software-Defined Networking (SDN)**, אוטומציה מהווה חלק בלתי נפרד מניהול רשתות ומערכות אבטחה מודרניות – יכולת שניתן ליישם באופן מעשי גם בסימולציית Packet Tracer.
-
-במקום לקנפג רכיבים כמו נתבים ופיירוולים (כגון ה-ASA) באופן ידני ופרטני דרך ממשק ה-CLI, ניתן להשתמש בתחנות קצה או שרתים בסימולציה המריצים **סקריפטים ב-Python**. בעזרת עקרונות של תכנות מונחה עצמים (OOP), ניתן ליצור במערכת אובייקטים לוגיים המייצגים את ציוד הקצה, ממשקי הרשת, ניתובי ה-BGP או חוקי האבטחה (Access Lists).
-
-הסקריפט אורז את המידע מהאובייקטים הללו למבני נתונים סטנדרטיים, כגון **JSON**, ומעביר אותם באמצעות קריאות **REST API** אל ה-Network Controller המרכזי. גישה זו מאפשרת:
-- **פריסה אוטומטית (Provisioning)** של הגדרות רשת מורכבות על גבי עשרות רכיבים במקביל
-- הפיכת ניהול תשתית התקשורת ל**מודולרי וניתן לשחזור** (Infrastructure as Code)
-- **צמצום משמעותי של טעויות אנוש** הנובעות מהגדרות ידניות
+> * This configuration uses Loopback interfaces for BGP stability and core network representation, following standard best practices for carrier simulations.
 
 ---
 
-## 📂 מבנה המאגר
+## ⚙️ Network Automation
 
-| תיקייה | תוכן |
+In the era of **Software-Defined Networking (SDN)**, automation is an inseparable part of modern network and security management — and Cisco Packet Tracer makes it practical to implement.
+
+Rather than manually configuring routers, switches, and firewalls (like the ASA) through individual CLI sessions, end-station computers or servers in the simulation can run **Python scripts**. Using **Object-Oriented Programming (OOP)** principles, these scripts create logical objects representing network devices, interfaces, BGP routes, and ACL rules.
+
+The script packages data from those objects into standard formats like **JSON** and pushes them via **REST API** calls to a central Network Controller. This approach enables:
+- **Automated Provisioning** — deploy complex configurations across dozens of devices in parallel
+- **Infrastructure as Code** — network management becomes modular and reproducible
+- **Reduced Human Error** — no more typos from manual CLI configuration
+
+---
+
+## 🕰️ The Goal: A Living Network Log
+
+Think of this repo as a time machine. Every commit is a snapshot. I'm documenting my entire thought process here, not just the final result.
+
+-   Why did I pick this IP schema?
+-   What's the logic behind my routing protocol choices?
+-   How am I building the security posture, and what trade-offs am I making?
+
+I'm building the resource I wish I had: a transparent, no-BS guide written by a student, for students. You can grab any `.pkt` file from the history, see the network at that stage, and understand why it was built that way.
+
+---
+
+## 🗂️ The Game Plan
+
+The project grows in stages. Each major milestone gets its own Packet Tracer (`.pkt`) file. The naming is chronological, so you can follow the evolution. Each new file contains everything from the previous one, plus the new stuff.
+
+It's like leveling up:
+1.  **`Core.pkt`** — The starting zone: ISP backbone, BGP peering, core routing.
+2.  **`DMZ.pkt`** — Level 2: Add the ASA firewall, DMZ, and NAT.
+3.  **`Distribution.pkt`** *(Future)* — Distribution layer, HSRP, Inter-VLAN routing.
+4.  **`Access.pkt`** *(Future)* — Access layer, VLANs, Port Security, wireless.
+5.  ...and so on. More levels added as I go.
+
+This structure is the key. It lets you walk through the entire network's history, one commit at a time.
+
+---
+
+## 📂 Repository Structure
+
+| Path | Contents |
 |---|---|
-| `/` | `README.md`, `LICENSE`, והגדרות המאגר הכלליות |
-| `SOYMSA/` | קבצי Cisco Packet Tracer (`.pkt`) המייצגים שלבי פיתוח שונים של הרשת |
-| `Documentation/` | תיעוד מפורט: טופולוגיית רשת, סכמות IP, מדיניות אבטחה ותרשימים |
+| `/` | `README.md`, `LICENSE`, and top-level repository configuration |
+| `SOYMSA/` | All Cisco Packet Tracer (`.pkt`) files representing different stages of the network |
+| `Documentation/` | Detailed network topology, IP schemas, security policies, and diagrams |
 
 ---
 
-## 📜 רישיון
+## 🧭 My Rules of Engagement
 
-פרויקט זה מופץ תחת **רישיון Apache 2.0**. ראה את קובץ `LICENSE` לפרטים נוספים.
+Every decision here is deliberate. The "why" is just as important as the "how."
+
+-   **Transparent Commits:** Every `git commit` tells a story. `git log` is the project's chronicle. I'm explaining my moves, my reasoning, and my mistakes.
+-   **Real Documentation:** As things get more complex, I'll add detailed notes on security policies, IP schemas, VLANs, and anything else that needs explaining. No black boxes.
 
 ---
 
-*נבנה עם ❤️ ועם הרבה מאוד פקטים.*
+## 🤝 How to Follow Along
+
+This is my academic journey, but I'm running it like an open-source project. Feel free to tag along.
+
+-   **Watch the repo:** Get notified when I push new changes.
+-   **Fork it:** Clone the repo and build your own version of SOYMSA. Experiment, break things, make it your own.
+-   **Open an issue:** Got a question or a suggestion? Hit me up in the issues. Let's talk shop.
+
+---
+
+## 📜 License & Attribution
+
+This project is under the **Apache License 2.0**. The full license is in the `LICENSE` file.
+
+You're free to use, modify, and share this work. But since I'm a student building this for my education, I'd personally appreciate it if you **cite this repo as a source** if you use it for your own school projects. It's not a legal thing, just a friendly request. Thanks.
+
+---
+
+## 🙏 Shoutouts
+
+-   To my grandfather, for the original SOYMSA story.
+-   To my professors and classmates, for the guidance and feedback.
+-   To the open-source world, for teaching me that sharing knowledge is the best way to learn.
+
+---
+
+Made with ❤️ and a lot of packets.
