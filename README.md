@@ -206,9 +206,9 @@ The script packages data from those objects into standard formats like **JSON** 
 
 Think of this repo as a time machine. Every commit is a snapshot. I'm documenting my entire thought process here, not just the final result.
 
--   Why did I pick this IP schema?
--   What's the logic behind my routing protocol choices?
--   How am I building the security posture, and what trade-offs am I making?
+- Why did I pick this IP schema?
+- What's the logic behind my routing protocol choices?
+- How am I building the security posture, and what trade-offs am I making?
 
 I'm building the resource I wish I had: a transparent, no-BS guide written by a student, for students. You can grab any `.pkt` file from the history, see the network at that stage, and understand why it was built that way.
 
@@ -219,11 +219,11 @@ I'm building the resource I wish I had: a transparent, no-BS guide written by a 
 The project grows in stages. Each major milestone gets its own Packet Tracer (`.pkt`) file. The naming is chronological, so you can follow the evolution. Each new file contains everything from the previous one, plus the new stuff.
 
 It's like leveling up:
-1.  **`Core.pkt`** — The starting zone: ISP backbone, BGP peering, core routing.
-2.  **`DMZ.pkt`** — Level 2: Add the ASA firewall, DMZ, and NAT.
-3.  **`Distribution.pkt`** *(Future)* — Distribution layer, HSRP, Inter-VLAN routing.
-4.  **`Access.pkt`** *(Future)* — Access layer, VLANs, Port Security, wireless.
-5.  ...and so on. More levels added as I go.
+1. **`Core.pkt`** — The starting zone: ISP backbone, BGP peering, core routing.
+2. **`DMZ.pkt`** — Level 2: Add the ASA firewall, DMZ, and NAT.
+3. **`Distribution.pkt`** *(Future)* — Distribution layer, HSRP, Inter-VLAN routing.
+4. **`Access.pkt`** *(Future)* — Access layer, VLANs, Port Security, wireless.
+5. ...and so on. More levels added as I go.
 
 This structure is the key. It lets you walk through the entire network's history, one commit at a time.
 
@@ -243,8 +243,8 @@ This structure is the key. It lets you walk through the entire network's history
 
 Every decision here is deliberate. The "why" is just as important as the "how."
 
--   **Transparent Commits:** Every `git commit` tells a story. `git log` is the project's chronicle. I'm explaining my moves, my reasoning, and my mistakes.
--   **Real Documentation:** As things get more complex, I'll add detailed notes on security policies, IP schemas, VLANs, and anything else that needs explaining. No black boxes.
+- **Transparent Commits:** Every `git commit` tells a story. `git log` is the project's chronicle. I'm explaining my moves, my reasoning, and my mistakes.
+- **Real Documentation:** As things get more complex, I'll add detailed notes on security policies, IP schemas, VLANs, and anything else that needs explaining. No black boxes.
 
 ---
 
@@ -252,9 +252,9 @@ Every decision here is deliberate. The "why" is just as important as the "how."
 
 This is my academic journey, but I'm running it like an open-source project. Feel free to tag along.
 
--   **Watch the repo:** Get notified when I push new changes.
--   **Fork it:** Clone the repo and build your own version of SOYMSA. Experiment, break things, make it your own.
--   **Open an issue:** Got a question or a suggestion? Hit me up in the issues. Let's talk shop.
+- **Watch the repo:** Get notified when I push new changes.
+- **Fork it:** Clone the repo and build your own version of SOYMSA. Experiment, break things, make it your own.
+- **Open an issue:** Got a question or a suggestion? Hit me up in the issues. Let's talk shop.
 
 ---
 
@@ -268,9 +268,9 @@ You're free to use, modify, and share this work. But since I'm a student buildin
 
 ## 🙏 Shoutouts
 
--   To my grandfather, for the original SOYMSA story.
--   To my professors and classmates, for the guidance and feedback.
--   To the open-source world, for teaching me that sharing knowledge is the best way to learn.
+- To my grandfather, for the original SOYMSA story.
+- To my professors and classmates, for the guidance and feedback.
+- To the open-source world, for teaching me that sharing knowledge is the best way to learn.
 
 ---
 
