@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סיכום הגדרות רשת ו-Security - טופולוגיית ASA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; }
+        .code-block { background-color: #1e293b; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; font-family: monospace; direction: ltr; text-align: left; overflow-x: auto; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; }
+        .status-allow { background-color: #dcfce7; color: #166534; }
+        .status-deny { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden">
+        <!-- Header -->
+        <header class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-3xl font-bold">תיעוד הגדרות רשת ו-Security</h1>
+            <p class="mt-2 text-blue-100">ניהול תעבורה בין איזורי אבטחה ב-Cisco ASA</p>
+        </header>
+
+        <main class="p-6 space-y-8">
+            <!-- Topology Overview -->
+            <section>
+                <h2 class="text-2xl font-semibold border-b-2 border-blue-100 pb-2 mb-4">1. מבנה הטופולוגיה (Security Levels)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 border rounded-lg bg-red-50">
+                        <h3 class="font-bold text-red-600">Outside (אדום)</h3>
+                        <p class="text-sm">Level: 0</p>
+                        <p class="text-xs italic">איזור לא בטוח (ISP)</p>
+                    </div>
+                    <div class="p-4 border rounded-lg bg-green-50">
+                        <h3 class="font-bold text-green-600">DMZ (ירוק)</h3>
+                        <p class="text-sm">Level: 50</p>
+                        <p class="text-xs italic">איזור שרתים ציבוריים</p>
+                    </div>
+                    <div class="p-4 border rounded-lg bg-blue-50">
+                        <h3 class="font-bold text-blue-600">Inside (כחול)</h3>
+                        <p class="text-sm">Level: 100</p>
+                        <p class="text-xs italic">רשת פנימית מאובטחת</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Access Control Lists -->
+            <section>
+                <h2 class="text-2xl font-semibold border-b-2 border-blue-100 pb-2 mb-4">2. חוקי גישה (ACL)</h2>
+                <p class="mb-2">כדי לאפשר כניסה מ-Outside (0) ל-DMZ (50), הגדרנו רשימת גישה מפורשת:</p>
+                <div class="code-block">
+access-list OUTSIDE_IN extended permit tcp any host 200.101.255.1 eq www
+access-list OUTSIDE_IN extended permit icmp any any echo
+access-group OUTSIDE_IN in interface outside
+                </div>
+                <p class="mt-4 text-sm text-gray-600"><strong>חשוב:</strong> רמת אבטחה גבוהה לנמוכה (100 -> 50) מותרת אוטומטית, אלא אם קיים ACL חוסם.</p>
+            </section>
+
+            <!-- Routing & Redistribution -->
+            <section>
+                <h2 class="text-2xl font-semibold border-b-2 border-blue-100 pb-2 mb-4">3. ניתוב והפצה מחדש (Redistribution)</h2>
+                <p class="mb-2">מכיוון שה-ASA לא מריץ BGP, נתב <strong>Movistar</strong> משמש כגשר בין ה-Red Cloud ל-Firewall:</p>
+                <div class="code-block">
+! בנתב Movistar - העברת נתיבי BGP ל-EIGRP (לכיוון ה-ASA)
+router eigrp 10
+ redistribute bgp 10834 metric 10000 100 255 1 1500
+
+! בנתב Movistar - העברת נתיבי EIGRP ל-BGP (לכיוון הענן האדום)
+router bgp 10834
+ redistribute eigrp 10
+                </div>
+            </section>
+
+            <!-- NAT Configuration -->
+            <section>
+                <h2 class="text-2xl font-semibold border-b-2 border-blue-100 pb-2 mb-4">4. הגדרות NAT ב-ASA</h2>
+                <p class="mb-2">כדי למנוע תקלות תקשורת בין ה-Inside ל-DMZ, הגדרנו "Identity NAT" (אי-תרגום כתובות):</p>
+                <div class="code-block">
+nat (inside,dmz) source static any any destination static any any
+                </div>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section class="bg-gray-50 p-4 rounded-lg">
+                <h2 class="text-2xl font-semibold border-b-2 border-blue-100 pb-2 mb-4">5. פקודות בדיקה חיוניות</h2>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li><code class="bg-gray-200 px-1 rounded">show route</code> - בדיקת טבלת הניתוב ב-ASA.</li>
+                    <li><code class="bg-gray-200 px-1 rounded">show eigrp neighbors</code> - וידוא יחסי שכנות.</li>
+                    <li><code class="bg-gray-200 px-1 rounded">packet-tracer input outside icmp...</code> - כלי הניתוח המרכזי.</li>
+                    <li><code class="bg-gray-200 px-1 rounded">inspect icmp</code> - חובה בתוך ה-Policy Map כדי לאפשר פינגים.</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer class="bg-gray-100 p-4 text-center text-sm text-gray-500 border-t">
+            נוצר על ידי גמני | תיעוד מעבדה - רשתות ואבטחת מידע
+        </footer>
+    </div>
+</body>
+</html>
