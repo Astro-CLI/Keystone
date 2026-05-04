@@ -1,0 +1,52 @@
+[
+    {
+        "hostname": "R-AR-BA",
+        "router_id": "1.1.1.1",
+        "process_id": 1,
+        "use_interface_config": true,
+        "interfaces": [
+            {
+                "name": "Loopback0",
+                "ip_address": "200.0.224.1",
+                "subnet_mask": "255.255.255.255",
+                "area": 0,
+                "is_passive": false
+            },
+            {
+                "name": "GigabitEthernet0/0",
+                "ip_address": "10.1.1.1",
+                "subnet_mask": "255.255.255.252",
+                "area": 0,
+                "auth_type": "message-digest",
+                "auth_key": "SOYMSA_SECRET"
+            },
+            {
+                "name": "GigabitEthernet0/1",
+                "ip_address": "192.168.10.1",
+                "subnet_mask": "255.255.255.0",
+                "area": 10,
+                "is_passive": true
+            }
+        ]
+    },
+    {
+        "hostname": "R-IL-N",
+        "router_id": "2.2.2.2",
+        "process_id": 1,
+        "use_interface_config": false,
+        "interfaces": [
+            {
+                "name": "Loopback0",
+                "ip_address": "82.166.0.1",
+                "subnet_mask": "255.255.255.255",
+                "area": 0
+            },
+            {
+                "name": "GigabitEthernet0/0",
+                "ip_address": "10.1.1.2",
+                "subnet_mask": "255.255.255.252",
+                "area": 0
+            }
+        ]
+    }
+]

@@ -1,0 +1,8 @@
+- hostname: DSW-1
+  vlans:
+    - name: Management
+      id: 10
+    - name: Engineering
+      # No ID provided - will be random!
+    - name: HR
+      # No ID provided - will be random!
