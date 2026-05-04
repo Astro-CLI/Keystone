@@ -41,12 +41,12 @@ python3 topology_composer.py --file my_network.yaml --output config_commands.txt
 ```
 Best for: Learning, testing, manual control
 
-#### Option 2: Direct .pkt File Generation (Fastest!)
+#### Option 2: Direct .pkt File Generation (Research/Development)
 ```bash
-# Generate complete .pkt file ready to open in PT 8.2.2
+# Generate .pkt file (experimental - see status below)
 python3 pt_file_builder.py my_network.yaml -o lab.pkt
 ```
-Best for: Speed, automation, batch lab creation
+Best for: Research, format investigation, structural validation
 
 ### Basic Usage
 ```bash
@@ -70,37 +70,35 @@ python3 topology_composer.py --file network.yaml --output config_commands.txt
 
 Then simply copy each device's commands and paste into Packet Tracer. See [topology_composer.md](./topology_composer.md) for full details.
 
-### 🔧 PT File Builder (Option B: Direct .pkt Generation) ⭐ NEW!
-**Generate complete, ready-to-open Packet Tracer 8.2.2 labs in seconds!** Reverse-engineered the .pkt binary format and built a generator that converts YAML/JSON/XML topologies directly into `.pkt` files.
+### 🔧 PT File Builder (Option B: Research/Development) 🔬
 
-```bash
-python3 pt_file_builder.py my_network.yaml -o lab.pkt
-# → Opens directly in Packet Tracer 8.2.2 with all devices and configs!
-```
+**⚠️ STATUS:** Reverse-engineered .pkt binary format successfully, but Packet Tracer 8.2.2 rejects generated files ("Unable to open file. The file was not saved correctly."). Investigation ongoing.
 
-**Features:**
-- ✅ Direct .pkt file generation (no manual steps!)
-- ✅ Automatic device placement with intelligent spacing
-- ✅ Full protocol support (OSPF, BGP, DHCP, NAT, SSH, etc.)
-- ✅ 100% compatible with Packet Tracer 8.2.2
-- ✅ 33 comprehensive tests (all passing)
+**What Works:**
+- ✅ Binary format reverse-engineered (XOR encryption + zlib)
+- ✅ Files generate with valid structure
+- ✅ XML decompresses correctly
+- ✅ 33 internal validation tests (100% passing)
 - ✅ Built-in inspector tool to analyze .pkt files
 
-**Usage:**
+**What Doesn't:**
+- ❌ Packet Tracer won't open generated files
+- ❌ Likely missing additional validation/checksum
+- 🔍 Root cause under investigation
+
+**For Production:** Use [Topology Composer (Option A)](#🎼-topology-composer-option-a-cli-commands) instead.
+
+**For Research/Investigation:**
 ```bash
-# Generate .pkt file
+# Generate .pkt file (for analysis)
 python3 pt_file_builder.py topology.yaml -o my_lab.pkt
 
-# Inspect existing .pkt file
+# Inspect file structure
 python3 pt_file_inspector.py my_lab.pkt --list-devices
-
-# Extract and verify XML
 python3 pt_file_inspector.py my_lab.pkt --xml --pretty
 ```
 
-See [pt_file_builder.md](./pt_file_builder.md) for complete documentation.
-
-⚠️ **Important**: Works with Packet Tracer **8.2.2 only** (version-specific format)
+See [pt_file_builder.md](./pt_file_builder.md) for technical details and ongoing investigation status.
 
 ### 🎲 Dynamic VLAN IDs
 The `vlan_weaver.py` intelligently generates unique VLAN IDs if you omit them from your config:

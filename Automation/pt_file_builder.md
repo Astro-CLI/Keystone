@@ -1,8 +1,14 @@
 # Packet Tracer .pkt File Generator
 
-**Status**: Reverse-engineered implementation for Packet Tracer 8.2.2
+**⚠️ STATUS: RESEARCH/DEVELOPMENT MODE**
 
-Generate native Cisco Packet Tracer 8.2.2 .pkt files from YAML/JSON/XML topology definitions. Converts logical network designs into actual Packet Tracer projects without manual file creation.
+**Current State:**
+- ✅ Successfully reverse-engineered .pkt binary format
+- ✅ Files generate with valid structure and decompress correctly  
+- ❌ Packet Tracer 8.2.2 rejects files: "Unable to open file. The file was not saved correctly."
+- 🔍 Investigation ongoing to identify missing validation requirements
+
+**RECOMMENDATION:** Use [Topology Composer](./topology_composer.md) (Option A) for production use. It generates tested, working CLI commands. Option B is a research project to fully reverse-engineer the .pkt format.
 
 ## Table of Contents
 

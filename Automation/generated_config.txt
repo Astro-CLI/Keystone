@@ -1,0 +1,160 @@
+
+============================================================
+Configuration for: CORE-R1
+============================================================
+
+enable
+configure terminal
+hostname CORE-R1
+interface GigabitEthernet0/0/0
+ description Link to EDGE-R2
+ ip address 10.0.1.1 255.255.255.0
+ no shutdown
+ exit
+interface GigabitEthernet0/0/1
+ description Link to DHCP-R3
+ ip address 10.0.2.1 255.255.255.0
+ no shutdown
+ exit
+router ospf 1
+ router-id 1.1.1.1
+ network 10.0.1.0 0.0.0.255 area 0
+ network 10.0.2.0 0.0.0.255 area 0
+ exit
+ip domain-name lab.local
+crypto key generate rsa modulus 1024
+line vty 0 4
+ transport input ssh
+ exit
+end
+write memory
+
+
+
+============================================================
+Configuration for: EDGE-R2
+============================================================
+
+enable
+configure terminal
+hostname EDGE-R2
+interface GigabitEthernet0/0/0
+ description Link to CORE-R1
+ ip address 10.0.1.2 255.255.255.0
+ no shutdown
+ exit
+interface GigabitEthernet0/0/1
+ description WAN to ISP
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+ exit
+router ospf 1
+ router-id 2.2.2.2
+ network 10.0.1.0 0.0.0.255 area 0
+ exit
+router bgp 65100
+ bgp router-id 2.2.2.2
+ neighbor 192.168.1.254 remote-as 65001
+ neighbor 192.168.1.254 description ISP Connection
+ network 10.0.0.0 mask 255.255.0.0
+ exit
+end
+write memory
+
+
+
+============================================================
+Configuration for: DHCP-R3
+============================================================
+
+enable
+configure terminal
+hostname DHCP-R3
+interface GigabitEthernet0/0/0
+ description Link to CORE-R1
+ ip address 10.0.2.2 255.255.255.0
+ no shutdown
+ exit
+interface GigabitEthernet0/0/1
+ description Internal LAN
+ ip address 10.0.3.1 255.255.255.0
+ no shutdown
+ exit
+router ospf 1
+ router-id 3.3.3.3
+ network 10.0.2.0 0.0.0.255 area 0
+ network 10.0.3.0 0.0.0.255 area 0
+ exit
+ip dhcp pool LAN-POOL
+ network 10.0.3.0 255.255.255.0
+ default-router 10.0.3.1
+ dns-server 8.8.8.8
+ exit
+ip dhcp excluded-address 10.0.3.1 10.0.3.10
+end
+write memory
+
+
+
+============================================================
+Configuration for: REDUNDANCY-R4
+============================================================
+
+enable
+configure terminal
+hostname REDUNDANCY-R4
+interface GigabitEthernet0/0/0
+ description Link to CORE-R1
+ ip address 10.0.2.3 255.255.255.0
+ no shutdown
+ exit
+interface vlan 10
+ description Management VLAN
+ ip address 10.0.10.254 255.255.255.0
+ no shutdown
+ exit
+router ospf 1
+ router-id 4.4.4.4
+ network 10.0.2.0 0.0.0.255 area 0
+ network 10.0.10.0 0.0.0.255 area 0
+ exit
+interface vlan 10
+ standby 1 ip 10.0.10.1
+ standby 1 priority 110
+ standby 1 preempt
+ no shutdown
+ exit
+end
+write memory
+
+
+
+============================================================
+Configuration for: NAT-GATEWAY
+============================================================
+
+enable
+configure terminal
+hostname NAT-GATEWAY
+interface GigabitEthernet0/0/0
+ description Inside network
+ ip address 10.0.1.254 255.255.255.0
+ no shutdown
+ exit
+interface GigabitEthernet0/0/1
+ description Outside (Internet)
+ ip address 203.0.113.50 255.255.255.0
+ no shutdown
+ exit
+interface GigabitEthernet0/0/0
+ ip nat inside
+ exit
+interface GigabitEthernet0/0/1
+ ip nat outside
+ exit
+ip nat inside source static 10.0.3.50 203.0.113.100
+ip nat pool INTERNET-POOL 203.0.113.200 203.0.113.220 netmask 255.255.255.0
+ip route 10.0.0.0 255.255.0.0 10.0.1.1
+end
+write memory
+
