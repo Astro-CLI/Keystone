@@ -1,6 +1,7 @@
 import json
 import argparse
 import sys
+from format_parser import parse_file, detect_format
 
 class ASAInterface:
     def __init__(self, name, nameif, security_level, ip, mask):
@@ -110,13 +111,14 @@ class ASARouter:
 
 def main():
     parser = argparse.ArgumentParser(description="ASA_Shield: Protecting the core with elegant precision.")
-    parser.add_argument("--file", help="Path to JSON inventory file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     args = parser.parse_args()
 
     if args.file:
         try:
-            with open(args.file, 'r') as f:
-                data = json.load(f)
+            data = parse_file(args.file)
+            if isinstance(data, dict):
+                data = [data]
             
             for r_data in data:
                 asa = ASARouter(r_data['hostname'])

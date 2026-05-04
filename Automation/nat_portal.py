@@ -1,5 +1,6 @@
 import json
 import argparse
+from format_parser import parse_file, detect_format
 
 class IOSNATRule:
     def __init__(self, rule_type, local_ip=None, global_ip=None, local_port=None, global_port=None, 
@@ -98,18 +99,14 @@ class IOSNATRouter:
 
 def main():
     parser = argparse.ArgumentParser(description="Master Cisco IOS NAT/PAT Generator.")
-    parser.add_argument("--file", help="Path to JSON or YAML inventory file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     args = parser.parse_args()
 
     if args.file:
         try:
-            import yaml
-            with open(args.file, 'r') as f:
-                if args.file.endswith(('.yaml', '.yml')):
-                    data = yaml.safe_load(f)
-                else:
-                    import json
-                    data = json.load(f)
+            data = parse_file(args.file)
+            if isinstance(data, dict):
+                data = [data]
             
             for r_data in data:
                 router = IOSNATRouter(r_data['hostname'], r_data.get('use_nvi', False))

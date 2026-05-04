@@ -1,5 +1,6 @@
 import json
 import argparse
+from format_parser import parse_file, detect_format
 
 class SSHConfig:
     def __init__(self, hostname, domain_name, username, password, enable_secret=None, 
@@ -44,18 +45,14 @@ class SSHConfig:
 
 def main():
     parser = argparse.ArgumentParser(description="Generate Cisco SSH configurations.")
-    parser.add_argument("--file", help="Path to JSON or YAML inventory file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     args = parser.parse_args()
 
     if args.file:
         try:
-            import yaml
-            with open(args.file, 'r') as f:
-                if args.file.endswith(('.yaml', '.yml')):
-                    data = yaml.safe_load(f)
-                else:
-                    import json
-                    data = json.load(f)
+            data = parse_file(args.file)
+            if isinstance(data, dict):
+                data = [data]
             
             for entry in data:
                 ssh = SSHConfig(

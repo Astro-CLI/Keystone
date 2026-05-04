@@ -1,5 +1,6 @@
 import json
 import argparse
+from format_parser import parse_file, detect_format
 
 def generate_hsrp_config(hostname, interfaces):
     lines = [f"! HSRP & SVI Configuration for {hostname}"]
@@ -15,12 +16,13 @@ def generate_hsrp_config(hostname, interfaces):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate HSRP and SVI configurations.")
-    parser.add_argument("--file", help="Path to JSON file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     args = parser.parse_args()
 
     if args.file:
-        with open(args.file, 'r') as f:
-            data = json.load(f)
+        data = parse_file(args.file)
+        if isinstance(data, dict):
+            data = [data]
         for entry in data:
             print(f"\n--- {entry['hostname']} ---")
             print(generate_hsrp_config(entry['hostname'], entry['interfaces']))

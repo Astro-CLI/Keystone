@@ -2,6 +2,7 @@ import json
 import argparse
 import random
 import sys
+from format_parser import parse_file, detect_format
 
 try:
     import yaml
@@ -30,22 +31,17 @@ def generate_vlan_config(hostname, vlans):
 
 def main():
     parser = argparse.ArgumentParser(description="Generate VLAN Database configurations.")
-    parser.add_argument("--file", help="Path to JSON or YAML file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     args = parser.parse_args()
 
     if not args.file:
-        print("Usage: python3 vlan_generator.py --file [file.json/file.yaml]")
+        print("Usage: python3 vlan_generator.py --file [file.json/file.yaml/file.xml]")
         return
 
     try:
-        with open(args.file, 'r') as f:
-            if args.file.endswith(('.yaml', '.yml')):
-                if not HAS_YAML:
-                    print("Error: PyYAML not installed. Run 'pip install PyYAML'")
-                    return
-                data = yaml.safe_load(f)
-            else:
-                data = json.load(f)
+        data = parse_file(args.file)
+        if isinstance(data, dict):
+            data = [data]
 
         for entry in data:
             print(f"\n--- {entry['hostname']} ---")

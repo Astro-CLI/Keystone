@@ -8,13 +8,14 @@ A collection of intelligent network configuration generators inspired by Steve J
 
 | Tool | Purpose | Learn More |
 |------|---------|-----------|
+| 🎼 **topology_composer** | Converts topology definitions into copy-paste CLI commands for Packet Tracer | [📖](./topology_composer.md) |
 | 🛣️ **ospf_pathmaker** | Creates OSPF routing paths and network topology | [📖](./ospf_pathmaker.md) |
 | 🎯 **bgp_conductor** | Orchestrates BGP neighbor relationships and AS peering | [📖](./bgp_conductor.md) |
 | ⚡ **eigrp_catalyst** | Catalyzes EIGRP convergence and topology discovery | [📖](./eigrp_catalyst.md) |
 | 🔄 **hsrp_sentinel** | Manages HSRP/SVI redundancy and failover | [📖](./hsrp_sentinel.md) |
 | 🏢 **dhcp_allocator** | Assigns and manages DHCP pool configurations | [📖](./dhcp_allocator.md) |
 | 🔐 **ssh_locksmith** | Creates secure SSH access and key management | [📖](./ssh_locksmith.md) |
-| 🗺️ **ip_architect** | Designs IP addressing schemes and subnetting | [📖](./ip_architect.md) |
+| 🗺️ **ip_architect** | Designs IP addressing schemes and subneting | [📖](./ip_architect.md) |
 | ⚓ **static_anchor** | Fixes static routes and manual routing entries | [📖](./static_anchor.md) |
 | 🌉 **nat_portal** | Creates NAT configurations and port forwarding | [📖](./nat_portal.md) |
 | 🧵 **vlan_weaver** | Weaves VLAN configurations with intelligent ID assignment | [📖](./vlan_weaver.md) |
@@ -26,15 +27,31 @@ A collection of intelligent network configuration generators inspired by Steve J
 ## 🚀 Getting Started
 
 ### Setup
-All scripts support **YAML** (`.yaml` or `.yml`) for modern, readable configuration. Install dependencies:
+All scripts support **YAML**, **JSON**, and **XML** formats for maximum flexibility. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
+### Two Ways to Build Packet Tracer Labs
+
+#### Option 1: CLI Commands (Fast & Safe)
+```bash
+# Generate copy-paste commands for Packet Tracer
+python3 topology_composer.py --file my_network.yaml --output config_commands.txt
+```
+Best for: Learning, testing, manual control
+
+#### Option 2: Direct .pkt File Generation (Fastest!)
+```bash
+# Generate complete .pkt file ready to open in PT 8.2.2
+python3 pt_file_builder.py my_network.yaml -o lab.pkt
+```
+Best for: Speed, automation, batch lab creation
+
 ### Basic Usage
 ```bash
-# Generate a configuration
-python3 ospf_pathmaker.py --file network.yaml
+# Use any generator
+python3 [generator_name].py --file config.yaml
 
 # See help for any generator
 python3 [generator_name].py --help
@@ -43,6 +60,47 @@ python3 [generator_name].py --help
 ---
 
 ## ✨ Key Features
+
+### 🎼 Topology Composer (Option A: CLI Commands)
+Define your entire network topology once in YAML/JSON/XML, then generate all CLI commands ready to copy-paste into Packet Tracer. Saves hours of manual configuration!
+
+```bash
+python3 topology_composer.py --file network.yaml --output config_commands.txt
+```
+
+Then simply copy each device's commands and paste into Packet Tracer. See [topology_composer.md](./topology_composer.md) for full details.
+
+### 🔧 PT File Builder (Option B: Direct .pkt Generation) ⭐ NEW!
+**Generate complete, ready-to-open Packet Tracer 8.2.2 labs in seconds!** Reverse-engineered the .pkt binary format and built a generator that converts YAML/JSON/XML topologies directly into `.pkt` files.
+
+```bash
+python3 pt_file_builder.py my_network.yaml -o lab.pkt
+# → Opens directly in Packet Tracer 8.2.2 with all devices and configs!
+```
+
+**Features:**
+- ✅ Direct .pkt file generation (no manual steps!)
+- ✅ Automatic device placement with intelligent spacing
+- ✅ Full protocol support (OSPF, BGP, DHCP, NAT, SSH, etc.)
+- ✅ 100% compatible with Packet Tracer 8.2.2
+- ✅ 33 comprehensive tests (all passing)
+- ✅ Built-in inspector tool to analyze .pkt files
+
+**Usage:**
+```bash
+# Generate .pkt file
+python3 pt_file_builder.py topology.yaml -o my_lab.pkt
+
+# Inspect existing .pkt file
+python3 pt_file_inspector.py my_lab.pkt --list-devices
+
+# Extract and verify XML
+python3 pt_file_inspector.py my_lab.pkt --xml --pretty
+```
+
+See [pt_file_builder.md](./pt_file_builder.md) for complete documentation.
+
+⚠️ **Important**: Works with Packet Tracer **8.2.2 only** (version-specific format)
 
 ### 🎲 Dynamic VLAN IDs
 The `vlan_weaver.py` intelligently generates unique VLAN IDs if you omit them from your config:
@@ -81,11 +139,23 @@ Wildcard Mask:      0.0.0.31
 Usable Range:       192.168.1.1 - 192.168.1.30
 ```
 
+### 📋 Multi-Format Support
+All generators support **JSON**, **YAML**, and **XML** input formats. Format is auto-detected:
+
+```bash
+# All these work - format auto-detected
+python3 ospf_pathmaker.py --file network.json
+python3 ospf_pathmaker.py --file network.yaml
+python3 ospf_pathmaker.py --file network.xml
+```
+
 ---
 
 ## 📚 Full Documentation
 
 Each generator has detailed documentation in its own `.md` file (see table above). Start with the tool you need, or explore the suite to build complete automation workflows.
+
+**New to Packet Tracer automation?** Start with [topology_composer.md](./topology_composer.md)!
 
 
 

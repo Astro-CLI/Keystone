@@ -1,6 +1,7 @@
 import json
 import argparse
 import sys
+from format_parser import parse_file, detect_format
 
 class StaticRoute:
     """Represents a single static route configuration."""
@@ -63,10 +64,11 @@ class StaticRouteRouter:
         }
 
 def load_from_file(filepath):
-    """Loads static route configurations from a JSON file."""
+    """Loads static route configurations from a JSON, YAML, or XML file."""
     try:
-        with open(filepath, 'r') as f:
-            data = json.load(f)
+        data = parse_file(filepath)
+        if isinstance(data, dict):
+            data = [data]
         
         routers = []
         for r_data in data:
@@ -119,7 +121,7 @@ def interactive_mode():
 
 def main():
     parser = argparse.ArgumentParser(description="Generate Static Route configurations for Cisco IOS/Packet Tracer.")
-    parser.add_argument("--file", help="Path to JSON inventory file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     parser.add_argument("--output", help="Path to save generated CLI config")
     parser.add_argument("--json-out", help="Path to save inventory as JSON")
     

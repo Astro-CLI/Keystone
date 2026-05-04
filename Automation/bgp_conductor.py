@@ -1,6 +1,7 @@
 import json
 import argparse
 import sys
+from format_parser import parse_file, detect_format
 
 class BGPNeighbor:
     """Represents a BGP neighbor configuration."""
@@ -77,10 +78,24 @@ class BGPRouter:
         }
 
 def load_from_file(filepath):
-    """Loads BGP configurations from a JSON file."""
+    """
+    Loads BGP configurations from JSON, YAML, or XML file.
+    
+    Automatically detects format based on file extension (.json, .yaml, .yml, .xml)
+    or by analyzing file content.
+    
+    Args:
+        filepath (str): Path to inventory file in JSON, YAML, or XML format
+        
+    Returns:
+        list: List of BGPRouter objects
+    """
     try:
-        with open(filepath, 'r') as f:
-            data = json.load(f)
+        data = parse_file(filepath)
+        
+        # Ensure data is a list
+        if isinstance(data, dict):
+            data = [data]
         
         routers = []
         for r_data in data:
@@ -142,7 +157,7 @@ def interactive_mode():
 
 def main():
     parser = argparse.ArgumentParser(description="Generate BGP configurations for Cisco IOS/Packet Tracer.")
-    parser.add_argument("--file", help="Path to JSON inventory file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     parser.add_argument("--output", help="Path to save generated CLI config")
     parser.add_argument("--json-out", help="Path to save inventory as JSON")
     

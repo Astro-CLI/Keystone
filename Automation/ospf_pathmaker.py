@@ -2,6 +2,7 @@ import json
 import ipaddress
 import argparse
 import sys
+from format_parser import parse_file, detect_format
 
 class OSPFInterface:
     """Represents a network interface with OSPF configuration."""
@@ -106,10 +107,25 @@ class OSPFRouter:
         }
 
 def load_from_file(filepath):
-    """Loads router configurations from a JSON file."""
+    """
+    Loads router configurations from JSON, YAML, or XML file.
+    
+    Automatically detects format based on file extension (.json, .yaml, .yml, .xml)
+    or by analyzing file content.
+    
+    Args:
+        filepath (str): Path to inventory file in JSON, YAML, or XML format
+        
+    Returns:
+        list: List of OSPFRouter objects
+    """
     try:
-        with open(filepath, 'r') as f:
-            data = json.load(f)
+        data = parse_file(filepath)
+        
+        # Ensure data is a list
+        if isinstance(data, dict):
+            # If it's a single router config, wrap it
+            data = [data]
         
         routers = []
         for r_data in data:
@@ -167,7 +183,7 @@ def interactive_mode():
 
 def main():
     parser = argparse.ArgumentParser(description="Generate OSPF configurations for Cisco IOS/Packet Tracer.")
-    parser.add_argument("--file", help="Path to JSON inventory file")
+    parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     parser.add_argument("--output", help="Path to save generated CLI config")
     parser.add_argument("--json-out", help="Path to save inventory as JSON")
     

@@ -1,0 +1,161 @@
+# Example Network Topology for Packet Tracer
+# This file demonstrates all features of Topology Composer
+# Copy this as a template and modify for your network
+
+devices:
+  - hostname: CORE-R1
+    type: router
+    description: "Core router with OSPF"
+    interfaces:
+      - name: GigabitEthernet0/0/0
+        ip: 10.0.1.1
+        mask: 255.255.255.0
+        description: "Link to EDGE-R2"
+      - name: GigabitEthernet0/0/1
+        ip: 10.0.2.1
+        mask: 255.255.255.0
+        description: "Link to DHCP-R3"
+    
+    ospf:
+      process_id: 1
+      router_id: 1.1.1.1
+      networks:
+        - network: 10.0.1.0
+          wildcard: 0.0.0.255
+          area: 0
+        - network: 10.0.2.0
+          wildcard: 0.0.0.255
+          area: 0
+    
+    ssh:
+      enabled: true
+
+  - hostname: EDGE-R2
+    type: router
+    description: "Edge router with BGP"
+    interfaces:
+      - name: GigabitEthernet0/0/0
+        ip: 10.0.1.2
+        mask: 255.255.255.0
+        description: "Link to CORE-R1"
+      - name: GigabitEthernet0/0/1
+        ip: 192.168.1.1
+        mask: 255.255.255.0
+        description: "WAN to ISP"
+    
+    ospf:
+      process_id: 1
+      router_id: 2.2.2.2
+      networks:
+        - network: 10.0.1.0
+          wildcard: 0.0.0.255
+          area: 0
+    
+    bgp:
+      asn: 65100
+      router_id: 2.2.2.2
+      neighbors:
+        - ip: 192.168.1.254
+          asn: 65001
+          description: "ISP Connection"
+      networks:
+        - network: 10.0.0.0
+          mask: 255.255.0.0
+
+  - hostname: DHCP-R3
+    type: router
+    description: "DHCP and NAT router"
+    interfaces:
+      - name: GigabitEthernet0/0/0
+        ip: 10.0.2.2
+        mask: 255.255.255.0
+        description: "Link to CORE-R1"
+      - name: GigabitEthernet0/0/1
+        ip: 10.0.3.1
+        mask: 255.255.255.0
+        description: "Internal LAN"
+    
+    ospf:
+      process_id: 1
+      router_id: 3.3.3.3
+      networks:
+        - network: 10.0.2.0
+          wildcard: 0.0.0.255
+          area: 0
+        - network: 10.0.3.0
+          wildcard: 0.0.0.255
+          area: 0
+    
+    dhcp:
+      pools:
+        - name: LAN-POOL
+          network: 10.0.3.0
+          mask: 255.255.255.0
+          gateway: 10.0.3.1
+          dns: "8.8.8.8"
+      excluded:
+        - start: 10.0.3.1
+          end: 10.0.3.10
+
+  - hostname: REDUNDANCY-R4
+    type: router
+    description: "HSRP gateway for redundancy"
+    interfaces:
+      - name: GigabitEthernet0/0/0
+        ip: 10.0.2.3
+        mask: 255.255.255.0
+        description: "Link to CORE-R1"
+      - name: VLAN10
+        vlan: 10
+        ip: 10.0.10.254
+        mask: 255.255.255.0
+        description: "Management VLAN"
+    
+    ospf:
+      process_id: 1
+      router_id: 4.4.4.4
+      networks:
+        - network: 10.0.2.0
+          wildcard: 0.0.0.255
+          area: 0
+        - network: 10.0.10.0
+          wildcard: 0.0.0.255
+          area: 0
+    
+    hsrp:
+      groups:
+        - vlan: 10
+          group_id: 1
+          priority: 110
+          virtual_ip: 10.0.10.1
+
+  - hostname: NAT-GATEWAY
+    type: router
+    description: "NAT gateway for internet access"
+    interfaces:
+      - name: GigabitEthernet0/0/0
+        ip: 10.0.1.254
+        mask: 255.255.255.0
+        description: "Inside network"
+      - name: GigabitEthernet0/0/1
+        ip: 203.0.113.50
+        mask: 255.255.255.0
+        description: "Outside (Internet)"
+    
+    static_routes:
+      - destination: 10.0.0.0
+        mask: 255.255.0.0
+        next_hop: 10.0.1.1
+    
+    nat:
+      inside_interfaces:
+        - GigabitEthernet0/0/0
+      outside_interfaces:
+        - GigabitEthernet0/0/1
+      static:
+        - inside_ip: 10.0.3.50
+          outside_ip: 203.0.113.100
+      dynamic:
+        - name: INTERNET-POOL
+          start_ip: 203.0.113.200
+          end_ip: 203.0.113.220
