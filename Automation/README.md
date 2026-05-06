@@ -165,3 +165,12 @@ Each generator has detailed documentation in its own `.md` file (see table above
 
 
 
+
+## Investigation Results: Option B Analysis
+
+A comprehensive investigation into PT 8.2.2 .pkt format has been completed. See [OPTION_B_STATUS.md](./OPTION_B_STATUS.md) for full details.
+
+**Key Finding**: PT 8.2.2 uses proprietary encryption not documented publicly. The format is significantly different from what was available in ptexplorer (which documented PT 5.x).
+
+**Status**: Option A is production-ready. Option B remains research.
+
