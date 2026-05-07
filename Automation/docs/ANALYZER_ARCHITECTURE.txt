@@ -1,0 +1,269 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║            KEYSTONE PT ANALYZER - COMPLETE ARCHITECTURE                       ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 1: EXTRACTION (Inside Packet Tracer)                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                          ┌─────────────────────┐
+                          │  Packet Tracer      │
+                          │  Topology File      │
+                          │  (.pkt)             │
+                          └─────────────────────┘
+                                    ↓
+                   ┌─────────────────────────────────┐
+                   │   Extensions > Scripting        │
+                   │   Edit File Script Module       │
+                   │   [Paste pt_analyzer.js]        │
+                   └─────────────────────────────────┘
+                                    ↓
+                ╔═════════════════════════════════════╗
+                ║    pt_analyzer.js EXECUTION        ║
+                ╠═════════════════════════════════════╣
+                ║ 1. Get network object              ║
+                ║ 2. Count devices                   ║
+                ║ 3. For each device:                ║
+                ║    - Get device name/model/type    ║
+                ║    - Get CommandLine interface     ║
+                ║    - Skip setup dialog             ║
+                ║    - Run "show running-config"     ║
+                ║    - Capture output buffer         ║
+                ║    - Format and display            ║
+                ║ 4. Print summary                   ║
+                ╚═════════════════════════════════════╝
+                                    ↓
+                     ┌───────────────────────────┐
+                     │  CONSOLE OUTPUT:          │
+                     │                           │
+                     │  Device count: 5          │
+                     │  [Device 1 Config]        │
+                     │  [Device 2 Config]        │
+                     │  [Device 3 Config]        │
+                     │  [Device 4 Config]        │
+                     │  [Device 5 Config]        │
+                     │  ✨ Analysis complete     │
+                     └───────────────────────────┘
+                                    ↓
+                        ┌─────────────────────┐
+                        │  USER ACTION:       │
+                        │  Select all (Ctrl+A)│
+                        │  Copy (Ctrl+C)      │
+                        │  Paste to file      │
+                        │  configs.txt        │
+                        └─────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 2: PARSING (Local Machine)                                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+              ┌──────────────────────────────────────┐
+              │  configs.txt                         │
+              │  (Raw Cisco running configs)         │
+              │                                      │
+              │  Building configuration...           │
+              │  Current configuration : 1248 bytes  │
+              │  !                                   │
+              │  version 15.1                        │
+              │  hostname Router1                    │
+              │  interface GigabitEthernet0/0        │
+              │   ip address 10.0.1.1 255.255.255.0 │
+              │  ...                                 │
+              │  end                                 │
+              └──────────────────────────────────────┘
+                                    ↓
+                    $ python3 pt_config_parser.py configs.txt --yaml
+                                    ↓
+            ╔════════════════════════════════════════════════════╗
+            ║   pt_config_parser.py PROCESSING                  ║
+            ╠════════════════════════════════════════════════════╣
+            ║ 1. Read configs.txt                               ║
+            ║ 2. Initialize CiscoConfigParser                  ║
+            ║ 3. Parse line by line:                            ║
+            ║    - Extract hostname                             ║
+            ║    - Parse interface configs                      ║
+            ║    - Extract routing protocols                    ║
+            ║      (OSPF: pid, rid, networks)                   ║
+            ║      (BGP: asn, neighbors)                        ║
+            ║    - Parse services (DHCP, NAT, SSH)              ║
+            ║ 4. Convert to YAML structure                      ║
+            ║ 5. Save to configs_topology.yaml                  ║
+            ║ 6. Display summary                                ║
+            ╚════════════════════════════════════════════════════╝
+                                    ↓
+              ┌──────────────────────────────────────┐
+              │  configs_topology.yaml               │
+              │                                      │
+              │  devices:                            │
+              │    - hostname: Router1               │
+              │      type: router                    │
+              │      interfaces:                     │
+              │        - name: GigabitEthernet0/0    │
+              │          ip: 10.0.1.1                │
+              │          mask: 255.255.255.0         │
+              │      ospf:                           │
+              │        process_id: 1                 │
+              │        networks:                     │
+              │          - network: 10.0.1.0         │
+              │            wildcard: 0.0.0.255       │
+              │            area: 0                   │
+              └──────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 3: MODIFICATION (User Edits)                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+      ┌─────────────────────────────────────────────────────────┐
+      │  BEFORE (Original):                                     │
+      │  hostname: Router1                                      │
+      │  ip: 10.0.1.1                                           │
+      │  network: 10.0.1.0                                      │
+      └─────────────────────────────────────────────────────────┘
+                            ↓
+                    [USER EDITS FILE]
+                            ↓
+      ┌─────────────────────────────────────────────────────────┐
+      │  AFTER (Modified):                                      │
+      │  hostname: BranchRouter2      ← CHANGED                │
+      │  ip: 192.168.2.1              ← CHANGED                │
+      │  network: 192.168.2.0          ← CHANGED                │
+      └─────────────────────────────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 4: REGENERATION (New Commands)                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+     $ python3 topology_composer.py --file configs_topology.yaml --output cmds.txt
+
+                              ↓
+              ╔──────────────────────────────────╗
+              ║  topology_composer.py            ║
+              ╠──────────────────────────────────╣
+              ║ 1. Read configs_topology.yaml    ║
+              ║ 2. For each device:              ║
+              ║    - Generate enable commands    ║
+              ║    - Generate hostname command   ║
+              ║    - Generate interface configs  ║
+              ║    - Generate routing configs    ║
+              ║    - Generate service configs    ║
+              ║ 3. Write to cmds.txt             ║
+              ║ 4. Print summary                 ║
+              ╚──────────────────────────────────╝
+                              ↓
+              ┌──────────────────────────────────┐
+              │  new_commands.txt                │
+              │                                  │
+              │  enable                          │
+              │  configure terminal              │
+              │  hostname BranchRouter2          │
+              │  !                               │
+              │  interface GigabitEthernet0/0    │
+              │   ip address 192.168.2.1         │
+              │       255.255.255.0              │
+              │   no shutdown                    │
+              │  !                               │
+              │  router ospf 1                   │
+              │   network 192.168.2.0 0.0.0.255  │
+              │       area 0                     │
+              │  !                               │
+              │  end                             │
+              └──────────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PHASE 5: DEPLOYMENT (Build New Topology)                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+              ┌──────────────────────────────┐
+              │  Paste new_commands.txt      │
+              │  into main.js                │
+              │                              │
+              │  (Or use CLI injection API)  │
+              └──────────────────────────────┘
+                              ↓
+         ╔═══════════════════════════════════════════╗
+         ║  main.js WITH NEW COMMANDS                ║
+         ╠═══════════════════════════════════════════╣
+         ║ 1. Spawn devices (duplicate)              ║
+         ║ 2. Position on canvas                     ║
+         ║ 3. Inject each command via CLI            ║
+         ║ 4. Skip setup dialogs                     ║
+         ║ 5. Verify configs applied                 ║
+         ║ 6. Save as .pkt file                      ║
+         ╚═══════════════════════════════════════════╝
+                              ↓
+                ┌──────────────────────────────┐
+                │  New PT Topology             │
+                │  (With modified parameters)  │
+                │                              │
+                │  [BranchRouter2] ← New name  │
+                │  IP: 192.168.2.1 ← New IP    │
+                │  Connected and configured!   │
+                └──────────────────────────────┘
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                            COMPLETE CYCLE                                     ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+  EXISTING TOPOLOGY → EXTRACT → PARSE → MODIFY → REBUILD → NEW TOPOLOGY
+         (PT)          (JS)      (Py)    (Edit)    (JS)         (PT)
+                        ↓         ↓         ↓        ↓          ↓
+                   configs   YAML file  Edit IPs/   Commands  New Network
+                   extracted readable  Names/VLANs generated  Running
+
+  This cycle is repeatable infinitely - extract, modify, rebuild, repeat!
+
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                          DATA FLOW DIAGRAM                                    ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+                            Cisco CLI Config
+                                  │
+                           ┌──────▼──────┐
+                           │ Raw text    │
+                           │ running-cfg │
+                           └──────┬──────┘
+                                  │
+                          PARSE ◄─┘ (ConfigParser)
+                                  │
+                                  ▼
+                    ┌─────────────────────────┐
+                    │  YAML Topology          │
+                    │  (Human Editable)       │
+                    │  - Hostnames            │
+                    │  - IP addresses         │
+                    │  - OSPF/BGP settings    │
+                    │  - DHCP pools           │
+                    │  - NAT rules            │
+                    └──────────┬──────────────┘
+                               │
+                        MODIFY ◄─┘ (Text Editor)
+                               │
+                               ▼
+                    ┌─────────────────────────┐
+                    │  Modified YAML          │
+                    │  (Ready to deploy)      │
+                    └──────────┬──────────────┘
+                               │
+                      GENERATE ◄─┘ (topology_composer)
+                               │
+                               ▼
+                    ┌─────────────────────────┐
+                    │  CLI Commands           │
+                    │  Ready to inject        │
+                    └──────────┬──────────────┘
+                               │
+                       DEPLOY ◄─┘ (main.js)
+                               │
+                               ▼
+                    ┌─────────────────────────┐
+                    │  Live PT Topology       │
+                    │  With new IPs/names     │
+                    │  Fully configured ✨    │
+                    └─────────────────────────┘
+

@@ -1,0 +1,17 @@
+[
+  {
+    "hostname": "DSW-1",
+    "vlans": [
+      {
+        "name": "Management",
+        "id": 10
+      },
+      {
+        "name": "Engineering"
+      },
+      {
+        "name": "HR"
+      }
+    ]
+  }
+]

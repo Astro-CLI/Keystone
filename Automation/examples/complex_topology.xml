@@ -1,0 +1,113 @@
+<?xml version="1.0" ?>
+<topology>
+  <devices>
+    <hostname>ISP-GATEWAY</hostname>
+    <type>router</type>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>203.0.113.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>ISP uplink</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>192.168.1.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>To Enterprise</description>
+    </interfaces>
+    <bgp>
+      <asn>65000</asn>
+      <router_id>203.0.113.1</router_id>
+      <neighbors>
+        <ip>192.168.1.2</ip>
+        <asn>65100</asn>
+        <description>Enterprise BGP Peer</description>
+      </neighbors>
+    </bgp>
+  </devices>
+  <devices>
+    <hostname>ENTERPRISE-CORE</hostname>
+    <type>router</type>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>192.168.1.2</ip>
+      <mask>255.255.255.0</mask>
+      <description>To ISP</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>10.0.1.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>To Distribution</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/2</name>
+      <ip>10.0.2.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>To Services</description>
+    </interfaces>
+    <bgp>
+      <asn>65100</asn>
+      <router_id>10.0.1.1</router_id>
+      <neighbors>
+        <ip>192.168.1.1</ip>
+        <asn>65000</asn>
+        <description>ISP peer</description>
+      </neighbors>
+    </bgp>
+    <ospf>
+      <process_id>1</process_id>
+      <router_id>10.0.1.1</router_id>
+      <networks>
+        <network>10.0.1.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+      <networks>
+        <network>10.0.2.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+    </ospf>
+  </devices>
+  <devices>
+    <hostname>DIST-SWITCH</hostname>
+    <type>switch</type>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.1.2</ip>
+      <mask>255.255.255.0</mask>
+      <description>Uplink to Core</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>DHCP-SERVER</hostname>
+    <type>server</type>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.2.10</ip>
+      <mask>255.255.255.0</mask>
+      <description>DHCP service</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>CLIENT-PC1</hostname>
+    <type>pc</type>
+    <interfaces>
+      <name>FastEthernet0</name>
+      <ip>10.0.1.100</ip>
+      <mask>255.255.255.0</mask>
+      <description>Office workstation</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>CLIENT-PC2</hostname>
+    <type>pc</type>
+    <interfaces>
+      <name>FastEthernet0</name>
+      <ip>10.0.1.101</ip>
+      <mask>255.255.255.0</mask>
+      <description>Office workstation</description>
+    </interfaces>
+  </devices>
+</topology>

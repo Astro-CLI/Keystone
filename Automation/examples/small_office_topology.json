@@ -1,0 +1,107 @@
+{
+  "devices": [
+    {
+      "hostname": "OFFICE-ROUTER",
+      "type": "router",
+      "description": "Small office gateway with NAT and DHCP",
+      "interfaces": [
+        {
+          "name": "GigabitEthernet0/0/0",
+          "ip": "203.0.113.50",
+          "mask": "255.255.255.0",
+          "description": "Internet uplink"
+        },
+        {
+          "name": "GigabitEthernet0/0/1",
+          "ip": "192.168.10.1",
+          "mask": "255.255.255.0",
+          "description": "Office LAN"
+        }
+      ],
+      "nat": {
+        "inside_interfaces": [
+          "GigabitEthernet0/0/1"
+        ],
+        "outside_interfaces": [
+          "GigabitEthernet0/0/0"
+        ],
+        "dynamic": [
+          {
+            "name": "OFFICE-POOL",
+            "start_ip": "203.0.113.100",
+            "end_ip": "203.0.113.110"
+          }
+        ]
+      },
+      "dhcp": {
+        "pools": [
+          {
+            "name": "OFFICE",
+            "network": "192.168.10.0",
+            "mask": "255.255.255.0",
+            "gateway": "192.168.10.1",
+            "dns": "8.8.8.8"
+          }
+        ],
+        "excluded": [
+          {
+            "start": "192.168.10.1",
+            "end": "192.168.10.10"
+          }
+        ]
+      }
+    },
+    {
+      "hostname": "OFFICE-SWITCH",
+      "type": "switch",
+      "interfaces": [
+        {
+          "name": "GigabitEthernet0/1",
+          "description": "Uplink to router"
+        }
+      ]
+    },
+    {
+      "hostname": "PRINTER",
+      "type": "server",
+      "interfaces": [
+        {
+          "name": "GigabitEthernet0/0/0",
+          "ip": "192.168.10.20",
+          "mask": "255.255.255.0",
+          "description": "Network printer"
+        }
+      ]
+    },
+    {
+      "hostname": "USER-PC-1",
+      "type": "pc",
+      "interfaces": [
+        {
+          "name": "FastEthernet0",
+          "description": "Employee workstation 1"
+        }
+      ]
+    },
+    {
+      "hostname": "USER-PC-2",
+      "type": "pc",
+      "interfaces": [
+        {
+          "name": "FastEthernet0",
+          "description": "Employee workstation 2"
+        }
+      ]
+    },
+    {
+      "hostname": "USER-PC-3",
+      "type": "pc",
+      "interfaces": [
+        {
+          "name": "FastEthernet0",
+          "description": "Employee workstation 3"
+        }
+      ]
+    }
+  ]
+}

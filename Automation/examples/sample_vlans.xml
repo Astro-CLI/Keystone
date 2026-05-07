@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<topology>
+  <hostname>DSW-1</hostname>
+  <vlans>
+    <name>Management</name>
+    <id>10</id>
+  </vlans>
+  <vlans>
+    <name>Engineering</name>
+  </vlans>
+  <vlans>
+    <name>HR</name>
+  </vlans>
+</topology>

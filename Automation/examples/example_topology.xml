@@ -1,0 +1,195 @@
+<?xml version="1.0" ?>
+<topology>
+  <devices>
+    <hostname>CORE-R1</hostname>
+    <type>router</type>
+    <description>Core router with OSPF</description>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.1.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>Link to EDGE-R2</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>10.0.2.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>Link to DHCP-R3</description>
+    </interfaces>
+    <ospf>
+      <process_id>1</process_id>
+      <router_id>1.1.1.1</router_id>
+      <networks>
+        <network>10.0.1.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+      <networks>
+        <network>10.0.2.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+    </ospf>
+    <ssh>
+      <enabled>True</enabled>
+    </ssh>
+  </devices>
+  <devices>
+    <hostname>EDGE-R2</hostname>
+    <type>router</type>
+    <description>Edge router with BGP</description>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.1.2</ip>
+      <mask>255.255.255.0</mask>
+      <description>Link to CORE-R1</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>192.168.1.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>WAN to ISP</description>
+    </interfaces>
+    <ospf>
+      <process_id>1</process_id>
+      <router_id>2.2.2.2</router_id>
+      <networks>
+        <network>10.0.1.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+    </ospf>
+    <bgp>
+      <asn>65100</asn>
+      <router_id>2.2.2.2</router_id>
+      <neighbors>
+        <ip>192.168.1.254</ip>
+        <asn>65001</asn>
+        <description>ISP Connection</description>
+      </neighbors>
+      <networks>
+        <network>10.0.0.0</network>
+        <mask>255.255.0.0</mask>
+      </networks>
+    </bgp>
+  </devices>
+  <devices>
+    <hostname>DHCP-R3</hostname>
+    <type>router</type>
+    <description>DHCP and NAT router</description>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.2.2</ip>
+      <mask>255.255.255.0</mask>
+      <description>Link to CORE-R1</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>10.0.3.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>Internal LAN</description>
+    </interfaces>
+    <ospf>
+      <process_id>1</process_id>
+      <router_id>3.3.3.3</router_id>
+      <networks>
+        <network>10.0.2.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+      <networks>
+        <network>10.0.3.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+    </ospf>
+    <dhcp>
+      <pools>
+        <name>LAN-POOL</name>
+        <network>10.0.3.0</network>
+        <mask>255.255.255.0</mask>
+        <gateway>10.0.3.1</gateway>
+        <dns>8.8.8.8</dns>
+      </pools>
+      <excluded>
+        <start>10.0.3.1</start>
+        <end>10.0.3.10</end>
+      </excluded>
+    </dhcp>
+  </devices>
+  <devices>
+    <hostname>REDUNDANCY-R4</hostname>
+    <type>router</type>
+    <description>HSRP gateway for redundancy</description>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.2.3</ip>
+      <mask>255.255.255.0</mask>
+      <description>Link to CORE-R1</description>
+    </interfaces>
+    <interfaces>
+      <name>VLAN10</name>
+      <vlan>10</vlan>
+      <ip>10.0.10.254</ip>
+      <mask>255.255.255.0</mask>
+      <description>Management VLAN</description>
+    </interfaces>
+    <ospf>
+      <process_id>1</process_id>
+      <router_id>4.4.4.4</router_id>
+      <networks>
+        <network>10.0.2.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+      <networks>
+        <network>10.0.10.0</network>
+        <wildcard>0.0.0.255</wildcard>
+        <area>0</area>
+      </networks>
+    </ospf>
+    <hsrp>
+      <groups>
+        <vlan>10</vlan>
+        <group_id>1</group_id>
+        <priority>110</priority>
+        <virtual_ip>10.0.10.1</virtual_ip>
+      </groups>
+    </hsrp>
+  </devices>
+  <devices>
+    <hostname>NAT-GATEWAY</hostname>
+    <type>router</type>
+    <description>NAT gateway for internet access</description>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>10.0.1.254</ip>
+      <mask>255.255.255.0</mask>
+      <description>Inside network</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>203.0.113.50</ip>
+      <mask>255.255.255.0</mask>
+      <description>Outside (Internet)</description>
+    </interfaces>
+    <static_routes>
+      <destination>10.0.0.0</destination>
+      <mask>255.255.0.0</mask>
+      <next_hop>10.0.1.1</next_hop>
+    </static_routes>
+    <nat>
+      <inside_interfaces/>
+      <outside_interfaces/>
+      <static>
+        <inside_ip>10.0.3.50</inside_ip>
+        <outside_ip>203.0.113.100</outside_ip>
+      </static>
+      <dynamic>
+        <name>INTERNET-POOL</name>
+        <start_ip>203.0.113.200</start_ip>
+        <end_ip>203.0.113.220</end_ip>
+      </dynamic>
+    </nat>
+  </devices>
+</topology>

@@ -1,0 +1,84 @@
+<?xml version="1.0" ?>
+<topology>
+  <devices>
+    <hostname>OFFICE-ROUTER</hostname>
+    <type>router</type>
+    <description>Small office gateway with NAT and DHCP</description>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>203.0.113.50</ip>
+      <mask>255.255.255.0</mask>
+      <description>Internet uplink</description>
+    </interfaces>
+    <interfaces>
+      <name>GigabitEthernet0/0/1</name>
+      <ip>192.168.10.1</ip>
+      <mask>255.255.255.0</mask>
+      <description>Office LAN</description>
+    </interfaces>
+    <nat>
+      <inside_interfaces/>
+      <outside_interfaces/>
+      <dynamic>
+        <name>OFFICE-POOL</name>
+        <start_ip>203.0.113.100</start_ip>
+        <end_ip>203.0.113.110</end_ip>
+      </dynamic>
+    </nat>
+    <dhcp>
+      <pools>
+        <name>OFFICE</name>
+        <network>192.168.10.0</network>
+        <mask>255.255.255.0</mask>
+        <gateway>192.168.10.1</gateway>
+        <dns>8.8.8.8</dns>
+      </pools>
+      <excluded>
+        <start>192.168.10.1</start>
+        <end>192.168.10.10</end>
+      </excluded>
+    </dhcp>
+  </devices>
+  <devices>
+    <hostname>OFFICE-SWITCH</hostname>
+    <type>switch</type>
+    <interfaces>
+      <name>GigabitEthernet0/1</name>
+      <description>Uplink to router</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>PRINTER</hostname>
+    <type>server</type>
+    <interfaces>
+      <name>GigabitEthernet0/0/0</name>
+      <ip>192.168.10.20</ip>
+      <mask>255.255.255.0</mask>
+      <description>Network printer</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>USER-PC-1</hostname>
+    <type>pc</type>
+    <interfaces>
+      <name>FastEthernet0</name>
+      <description>Employee workstation 1</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>USER-PC-2</hostname>
+    <type>pc</type>
+    <interfaces>
+      <name>FastEthernet0</name>
+      <description>Employee workstation 2</description>
+    </interfaces>
+  </devices>
+  <devices>
+    <hostname>USER-PC-3</hostname>
+    <type>pc</type>
+    <interfaces>
+      <name>FastEthernet0</name>
+      <description>Employee workstation 3</description>
+    </interfaces>
+  </devices>
+</topology>
