@@ -63,24 +63,24 @@ python3 topology_composer.py --file network.yaml --output commands.txt
 ## 4.7 תיעוד וכלים רלוונטיים (מקורות הפרויקט)
 
 בפרויקט נכתב תיעוד ייעודי ומעודכן ל-Option C:
-- `Automation/docs/README_OPTION_C.md`
-- `Automation/docs/OPTION_C_PTBUILDER.md`
-- `Automation/docs/OPTION_C_COMPLETE_DOCUMENTATION.md`
-- `Automation/docs/API_QUICK_REFERENCE.md`
-- `Automation/docs/TROUBLESHOOTING_GUIDE.md`
+- `Automation/docs/README_OPTION_C.md` — מסמך כניסה ל-Option C
+- `Automation/docs/OPTION_C_PTBUILDER.md` — תהליך PTBuilder והמרה מטופולוגיה לסקריפט
+- `Automation/docs/OPTION_C_COMPLETE_DOCUMENTATION.md` — תיעוד API מלא ודוגמאות
+- `Automation/docs/API_QUICK_REFERENCE.md` — דף עזר מהיר לפקודות/API
+- `Automation/docs/TROUBLESHOOTING_GUIDE.md` — תקלות נפוצות ופתרונות
 
 קבצי יישום מרכזיים:
-- `Automation/main.js` – סקריפט JavaScript להרצה בתוך PT
-- `Automation/tools/pt_scriptable_builder.py` – יצירת סקריפט PT מבוסס טופולוגיה
-- `Automation/tools/pt_scriptable_builder_real.py` – וריאנט מימוש נוסף
+- `Automation/main.js` – סקריפט JavaScript להרצה ישירה בתוך Packet Tracer
+- `Automation/tools/pt_scriptable_builder.py` – מחולל כללי שמתרגם YAML/JSON/XML לקוד PT/JavaScript
+- `Automation/tools/pt_scriptable_builder_real.py` – וריאנט ממוקד להרצה מעשית מול מנגנון הסקריפט של PT
 
 ## 4.8 טופולוגיות לדוגמה
 
 הפרויקט כולל טופולוגיות דוגמה לשימוש מיידי:
-- `simple_topology.yaml`
-- `example_topology.yaml`
-- `complex_topology.yaml`
-- `small_office_topology.yaml`
+- `Automation/examples/simple_topology.yaml`
+- `Automation/examples/example_topology.yaml`
+- `Automation/examples/complex_topology.yaml`
+- `Automation/examples/small_office_topology.yaml`
 
 קבצים אלה משמשים הן ל-Option A (פקודות CLI) והן לתרחישים של Option C.
 
