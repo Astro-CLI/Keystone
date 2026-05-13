@@ -19,13 +19,19 @@
    - Device creation, CLI, ports, descriptors, processes
    - Updated with probe-discovered runtime methods
 
-4. **[PT_ANALYZER_SUMMARY.md](PT_ANALYZER_SUMMARY.md)** 📊
+4. **[YAML_TO_MAINJS.md](YAML_TO_MAINJS.md)** 🧩
+   - YAML/JSON/XML to runnable `main.js`
+   - Spawning + CLI injection workflow
+   - Manual link plan output
+   - Option C + Option A bridge
+
+5. **[PT_ANALYZER_SUMMARY.md](PT_ANALYZER_SUMMARY.md)** 📊
    - High-level overview
    - Use cases and examples
    - Architecture summary
    - Quick reference
 
-5. **[ANALYZER_ARCHITECTURE.txt](ANALYZER_ARCHITECTURE.txt)** 🏗️
+6. **[ANALYZER_ARCHITECTURE.txt](ANALYZER_ARCHITECTURE.txt)** 🏗️
    - Visual ASCII diagrams
    - Phase-by-phase breakdown
    - Data flow visualization
@@ -113,6 +119,7 @@ PT_ANALYZER_INDEX.md (YOU ARE HERE)
 
 **Works with existing Keystone tools:**
 - topology_composer.py — Rebuilds topologies from YAML
+- yaml_to_mainjs.py — Generates runnable PT main.js scripts
 - main.js — Injects configs via CLI into PT
 - format_parser.py — Multi-format support
 - All 12 generators — Can use parsed data as input
