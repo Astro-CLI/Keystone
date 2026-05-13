@@ -69,6 +69,7 @@ Automation/
 | **Get started** | `docs/PT_ANALYZER_INDEX.md` |
 | **5-minute quickstart** | `docs/PT_ANALYZER_QUICKSTART.md` |
 | **Complete reference** | `docs/PT_ANALYZER_README.md` |
+| **PT API reference** | `docs/PT_API_DEEP_REFERENCE.md` |
 | **Understand architecture** | `docs/ANALYZER_ARCHITECTURE.txt` |
 | **See visuals** | `STRUCTURE_VISUAL.txt` |
 | **Troubleshoot** | `docs/TROUBLESHOOTING_GUIDE.md` |
@@ -134,8 +135,9 @@ python3 generators/ospf_pathmaker.py --topology examples/simple_topology.yaml
 ### Advanced (2-3 hours)
 1. `docs/OPTION_C_COMPLETE_DOCUMENTATION.md` — Full API
 2. `docs/API_QUICK_REFERENCE.md` — Quick reference
-3. Explore tools and modify scripts
-4. Build custom workflows
+3. `docs/PT_API_DEEP_REFERENCE.md` — Detailed object/function catalog
+4. Explore tools and modify scripts
+5. Build custom workflows
 
 ---
 
@@ -223,4 +225,3 @@ Sample topologies in 3 formats each:
 ---
 
 **Welcome to Keystone! Let's automate some networks.** 🚀
-

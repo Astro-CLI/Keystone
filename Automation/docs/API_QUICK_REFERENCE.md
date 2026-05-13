@@ -1,11 +1,14 @@
 # PT Scripting API - Quick Reference Card
 
+For the full reference, see `PT_API_DEEP_REFERENCE.md`.
+
 ## Objects
 
 ```javascript
-var activeFile = ipc.appWindow().getActiveFile();
+var appWindow = ipc.appWindow();
+var activeFile = appWindow.getActiveFile();
 var network = ipc.network();
-var workspace = ipc.appWindow().getActiveWorkspace();
+var workspace = appWindow.getActiveWorkspace();
 ```
 
 ## Network Operations
@@ -132,9 +135,9 @@ activeFile.addScriptDataStore("device_count", "7");
 ## Type Codes
 
 ```
-getType() returns:
+getType() returns a numeric code.
 0 = Router
-(other types to be documented)
+Other codes may vary by device family and PT version.
 ```
 
 ## Coordinate System
@@ -168,3 +171,15 @@ device.moveToLocationCentered(5000, 5000);
 device.moveToLocationCentered(500, 300);
 ```
 
+## Core creation recipe
+
+```javascript
+var appWindow = ipc.appWindow();
+var activeFile = appWindow.getActiveFile();
+var network = ipc.network();
+var template = network.getDeviceAt(0);
+
+activeFile.duplicateDevice(template);
+var device = network.getDeviceAt(network.getDeviceCount() - 1);
+device.moveToLocationCentered(100, 100);
+```
