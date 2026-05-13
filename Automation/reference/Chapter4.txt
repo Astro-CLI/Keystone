@@ -82,7 +82,7 @@ python3 topology_composer.py --file network.yaml --output commands.txt
 - `Automation/examples/complex_topology.yaml`
 - `Automation/examples/small_office_topology.yaml`
 
-קבצים אלה משמשים הן ל-Option A (פקודות CLI) והן לתרחישים של Option C.
+כל ארבעת הקבצים קיימים בפועל בתיקיית `Automation/examples/`, ומשמשים הן ל-Option A (פקודות CLI) והן לתרחישים של Option C.
 
 ## 4.9 הישגים מעודכנים
 
