@@ -62,7 +62,7 @@ python3 topology_composer.py --file network.yaml --output commands.txt
 
 ## 4.7 תיעוד וכלים רלוונטיים (מקורות הפרויקט)
 
-בפרויקט נכתב תיעוד ייעודי ומעודכן ל-Option C:
+בפרויקט קיים תיעוד ייעודי ומעודכן ל-Option C:
 - `Automation/docs/README_OPTION_C.md` — מסמך כניסה ל-Option C
 - `Automation/docs/OPTION_C_PTBUILDER.md` — תהליך PTBuilder והמרה מטופולוגיה לסקריפט
 - `Automation/docs/OPTION_C_COMPLETE_DOCUMENTATION.md` — תיעוד API מלא ודוגמאות
@@ -71,8 +71,8 @@ python3 topology_composer.py --file network.yaml --output commands.txt
 
 קבצי יישום מרכזיים:
 - `Automation/main.js` – סקריפט JavaScript להרצה ישירה בתוך Packet Tracer
-- `Automation/tools/pt_scriptable_builder.py` – מחולל כללי שמתרגם YAML/JSON/XML לקוד PT/JavaScript
-- `Automation/tools/pt_scriptable_builder_real.py` – וריאנט ממוקד להרצה מעשית מול מנגנון הסקריפט של PT
+- `Automation/tools/pt_scriptable_builder.py` – מחולל שימושי עיקרי שמייצר קוד `addDevice/addLink` לתרחיש Builder Code Editor
+- `Automation/tools/pt_scriptable_builder_real.py` – וריאנט ניסיוני/מתקדם שמכוון ל-IPC Scripting Module (Extensions → Scripting) לצורך בדיקות API ישירות
 
 ## 4.8 טופולוגיות לדוגמה
 
