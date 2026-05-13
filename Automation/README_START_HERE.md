@@ -71,6 +71,7 @@ Automation/
 | **Complete reference** | `docs/PT_ANALYZER_README.md` |
 | **PT API reference** | `docs/PT_API_DEEP_REFERENCE.md` |
 | **YAML -> main.js** | `docs/YAML_TO_MAINJS.md` |
+| **Packet Tracer -> YAML** | `docs/PT_TO_YAML.md` |
 | **Understand architecture** | `docs/ANALYZER_ARCHITECTURE.txt` |
 | **See visuals** | `STRUCTURE_VISUAL.txt` |
 | **Troubleshoot** | `docs/TROUBLESHOOTING_GUIDE.md` |
@@ -138,8 +139,9 @@ python3 generators/ospf_pathmaker.py --topology examples/simple_topology.yaml
 2. `docs/API_QUICK_REFERENCE.md` — Quick reference
 3. `docs/PT_API_DEEP_REFERENCE.md` — Detailed object/function catalog
 4. `docs/YAML_TO_MAINJS.md` — YAML to runnable Packet Tracer JS
-5. Explore tools and modify scripts
-6. Build custom workflows
+5. `docs/PT_TO_YAML.md` — Live Packet Tracer YAML exporter
+6. Explore tools and modify scripts
+7. Build custom workflows
 
 ---
 

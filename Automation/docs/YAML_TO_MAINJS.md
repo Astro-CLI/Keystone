@@ -105,8 +105,8 @@ The generated `main.js`:
 - `pt_config_parser.py` extracts configs into YAML/JSON/XML.
 - `topology_composer.py` converts topology data into CLI commands.
 - `yaml_to_mainjs.py` converts topology data into runnable Packet Tracer JavaScript.
+- `pt_yaml_exporter.js` prints live Packet Tracer topology as YAML in the debug console.
 
 That gives you a full loop:
 
 `extract -> edit -> generate CLI -> generate main.js -> run in Packet Tracer`
-

@@ -25,13 +25,19 @@
    - Manual link plan output
    - Option C + Option A bridge
 
-5. **[PT_ANALYZER_SUMMARY.md](PT_ANALYZER_SUMMARY.md)** 📊
+5. **[PT_TO_YAML.md](PT_TO_YAML.md)** 🔁
+   - Live Packet Tracer topology to YAML
+   - Copyable debug-console exporter
+   - Running-config blocks and connection hints
+   - Inspiration workflow for multiple labs
+
+6. **[PT_ANALYZER_SUMMARY.md](PT_ANALYZER_SUMMARY.md)** 📊
    - High-level overview
    - Use cases and examples
    - Architecture summary
    - Quick reference
 
-6. **[ANALYZER_ARCHITECTURE.txt](ANALYZER_ARCHITECTURE.txt)** 🏗️
+7. **[ANALYZER_ARCHITECTURE.txt](ANALYZER_ARCHITECTURE.txt)** 🏗️
    - Visual ASCII diagrams
    - Phase-by-phase breakdown
    - Data flow visualization
@@ -120,6 +126,7 @@ PT_ANALYZER_INDEX.md (YOU ARE HERE)
 **Works with existing Keystone tools:**
 - topology_composer.py — Rebuilds topologies from YAML
 - yaml_to_mainjs.py — Generates runnable PT main.js scripts
+- pt_yaml_exporter.js — Prints live topology as YAML
 - main.js — Injects configs via CLI into PT
 - format_parser.py — Multi-format support
 - All 12 generators — Can use parsed data as input
