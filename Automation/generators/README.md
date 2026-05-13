@@ -8,6 +8,7 @@ A collection of intelligent network configuration generators inspired by Steve J
 
 | Tool | Purpose | Learn More |
 |------|---------|-----------|
+| 🚀 **pt_script_gen** | Generates working PT JavaScript scripts (Option C) — creates, positions, and configures devices from inside Packet Tracer | [📖](./pt_script_gen.md) |
 | 🎼 **topology_composer** | Converts topology definitions into copy-paste CLI commands for Packet Tracer | [📖](./topology_composer.md) |
 | 🛣️ **ospf_pathmaker** | Creates OSPF routing paths and network topology | [📖](./ospf_pathmaker.md) |
 | 🎯 **bgp_conductor** | Orchestrates BGP neighbor relationships and AS peering | [📖](./bgp_conductor.md) |
@@ -32,7 +33,7 @@ All scripts support **YAML**, **JSON**, and **XML** formats for maximum flexibil
 pip install -r requirements.txt
 ```
 
-### Two Ways to Build Packet Tracer Labs
+### Three Ways to Build Packet Tracer Labs
 
 #### Option 1: CLI Commands (Fast & Safe)
 ```bash
@@ -41,10 +42,18 @@ python3 topology_composer.py --file my_network.yaml --output config_commands.txt
 ```
 Best for: Learning, testing, manual control
 
-#### Option 2: Direct .pkt File Generation (Research/Development)
+#### Option 2: PT Script — runs inside Packet Tracer ✅ Recommended
+```bash
+# Generate a JS script that runs inside PT to build the topology automatically
+python3 ../tools/pt_script_gen.py --file my_network.yaml --output my_lab.js
+```
+Then in PT: Extensions → Scripting → Edit File Script Module → Load → Run  
+Best for: Full automation with PT saving a real .pkt file
+
+#### Option 3: Direct .pkt File Generation (Research/Development)
 ```bash
 # Generate .pkt file (experimental - see status below)
-python3 pt_file_builder.py my_network.yaml -o lab.pkt
+python3 ../tools/pt_file_builder.py my_network.yaml -o lab.pkt
 ```
 Best for: Research, format investigation, structural validation
 
@@ -60,6 +69,18 @@ python3 [generator_name].py --help
 ---
 
 ## ✨ Key Features
+
+### 🚀 PT Script Generator (Option C: Works Inside PT) — Recommended for .pkt generation
+Generate JavaScript scripts that run **inside** Packet Tracer to build topologies automatically. This is the only approach that produces working `.pkt` files programmatically.
+
+```bash
+python3 ../tools/pt_script_gen.py --file network.yaml --output my_lab.js
+```
+
+Then in PT: **Extensions → Scripting → Edit File Script Module** → Load → Run.  
+Devices are created, positioned, and configured automatically. Save with **File → Save As**.
+
+See [pt_script_gen.md](./pt_script_gen.md) for full details.
 
 ### 🎼 Topology Composer (Option A: CLI Commands)
 Define your entire network topology once in YAML/JSON/XML, then generate all CLI commands ready to copy-paste into Packet Tracer. Saves hours of manual configuration!
