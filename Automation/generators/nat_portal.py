@@ -120,7 +120,7 @@ def main():
                 for r in r_data.get('rules', []):
                     router.add_rule(**r)
                 
-                print(f"\n--- {router.hostname} ---")
+                print(f"\n! --- {router.hostname} ---")
                 print(router.generate_cli_config())
         except Exception as e:
             print(f"Error: {e}")

@@ -66,7 +66,7 @@ def main():
                     timeout=entry.get('timeout', 60),
                     retries=entry.get('retries', 3)
                 )
-                print(f"\n--- {ssh.hostname} ---")
+                print(f"\n! --- {ssh.hostname} ---")
                 print(ssh.generate_cli_config())
         except Exception as e:
             print(f"Error: {e}")

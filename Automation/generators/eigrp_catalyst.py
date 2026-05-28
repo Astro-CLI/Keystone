@@ -6,17 +6,20 @@ from format_parser import parse_file, detect_format
 
 class EIGRPInterface:
     """Represents a network interface with EIGRP configuration."""
-    def __init__(self, name, ip_address, subnet_mask, is_passive=False):
+    def __init__(self, name, ip_address=None, subnet_mask=None, is_passive=False, ipv6_enabled=False):
         self.name = name
         self.ip_address = ip_address
         self.subnet_mask = subnet_mask
         self.is_passive = is_passive
+        self.ipv6_enabled = ipv6_enabled
 
     def get_network_and_wildcard(self):
-        """Calculates the network address and wildcard mask."""
+        """Calculates the network address and wildcard mask (IPv4)."""
         if not self.ip_address or not self.subnet_mask:
             return None, None
         try:
+            if ':' in str(self.ip_address):
+                return None, None
             interface = ipaddress.IPv4Interface(f"{self.ip_address}/{self.subnet_mask}")
             network = interface.network.network_address
             
@@ -31,49 +34,67 @@ class EIGRPInterface:
 
 class EIGRPRouter:
     """Represents a router running EIGRP."""
-    def __init__(self, hostname, as_number, router_id=None, is_stub=False):
+    def __init__(self, hostname, as_number, router_id=None, is_stub=False, ipv6_as_number=None):
         self.hostname = hostname
         self.as_number = as_number
         self.router_id = router_id
         self.is_stub = is_stub
+        self.ipv6_as_number = ipv6_as_number
         self.interfaces = []
 
-    def add_interface(self, name, ip_address, subnet_mask, is_passive=False):
-        self.interfaces.append(EIGRPInterface(name, ip_address, subnet_mask, is_passive))
+    def add_interface(self, name, ip_address=None, subnet_mask=None, is_passive=False, ipv6_enabled=False):
+        self.interfaces.append(EIGRPInterface(name, ip_address, subnet_mask, is_passive, ipv6_enabled))
 
     def generate_cli_config(self):
-        """Generates Cisco IOS CLI commands for EIGRP."""
+        """Generates Cisco IOS CLI commands for EIGRP (IPv4 and IPv6)."""
         lines = [f"! EIGRP Configuration for {self.hostname}"]
-        lines.append(f"router eigrp {self.as_number}")
         
+        # IPv6 Interface level config
+        if self.ipv6_as_number is not None:
+            for iface in self.interfaces:
+                if iface.ipv6_enabled:
+                    lines.append(f"interface {iface.name}")
+                    lines.append(f" ipv6 eigrp {self.ipv6_as_number}")
+                    lines.append(" exit")
+
+        # IPv4 Router EIGRP
+        lines.append(f"router eigrp {self.as_number}")
         if self.router_id:
             lines.append(f" eigrp router-id {self.router_id}")
-        
         if self.is_stub:
             lines.append(" eigrp stub connected summary")
             
-        # Passive interfaces
+        # Passive interfaces (IPv4)
         passive_ifs = [iface.name for iface in self.interfaces if iface.is_passive]
         if passive_ifs:
-            # Check if all are passive for a cleaner config
-            if len(passive_ifs) == len(self.interfaces):
-                lines.append(" passive-interface default")
-            else:
-                for iface_name in passive_ifs:
-                    lines.append(f" passive-interface {iface_name}")
+            for iface_name in passive_ifs:
+                lines.append(f" passive-interface {iface_name}")
             
-        # Network statements
+        # Network statements (IPv4)
         networks = []
         for iface in self.interfaces:
             net, wildcard = iface.get_network_and_wildcard()
             if net and wildcard:
                 networks.append(f" network {net} {wildcard}")
         
-        # Remove duplicates
         lines.extend(sorted(list(set(networks))))
-        
         lines.append(" no auto-summary")
         lines.append(" exit")
+
+        # IPv6 Router EIGRP
+        if self.ipv6_as_number is not None:
+            lines.append(f"ipv6 router eigrp {self.ipv6_as_number}")
+            if self.router_id:
+                lines.append(f" eigrp router-id {self.router_id}")
+            if self.is_stub:
+                lines.append(" eigrp stub connected summary")
+            # Passive interfaces (IPv6)
+            for iface in self.interfaces:
+                if iface.is_passive and iface.ipv6_enabled:
+                    lines.append(f" passive-interface {iface.name}")
+            lines.append(" no shutdown")
+            lines.append(" exit")
+            
         return "\n".join(lines)
 
     def to_dict(self):
@@ -81,6 +102,7 @@ class EIGRPRouter:
         return {
             "hostname": self.hostname,
             "as_number": self.as_number,
+            "ipv6_as_number": self.ipv6_as_number,
             "router_id": self.router_id,
             "is_stub": self.is_stub,
             "interfaces": [
@@ -88,7 +110,8 @@ class EIGRPRouter:
                     "name": i.name,
                     "ip_address": i.ip_address,
                     "subnet_mask": i.subnet_mask,
-                    "is_passive": i.is_passive
+                    "is_passive": i.is_passive,
+                    "ipv6_enabled": i.ipv6_enabled
                 } for i in self.interfaces
             ]
         }
@@ -104,13 +127,15 @@ def load_from_file(filepath):
         for r_data in data:
             router = EIGRPRouter(r_data['hostname'], r_data['as_number'], 
                                 r_data.get('router_id'),
-                                r_data.get('is_stub', False))
+                                r_data.get('is_stub', False),
+                                r_data.get('ipv6_as_number'))
             for i_data in r_data.get('interfaces', []):
                 router.add_interface(
                     i_data['name'], 
-                    i_data['ip_address'], 
-                    i_data['subnet_mask'],
-                    i_data.get('is_passive', False)
+                    i_data.get('ip_address'), 
+                    i_data.get('subnet_mask'),
+                    i_data.get('is_passive', False),
+                    i_data.get('ipv6_enabled', False)
                 )
             routers.append(router)
         return routers
@@ -166,7 +191,7 @@ def main():
     full_config = ""
     for router in routers:
         config = router.generate_cli_config()
-        print(f"\n--- {router.hostname} ---")
+        print(f"\n! --- {router.hostname} ---")
         print(config)
         full_config += config + "\n"
         

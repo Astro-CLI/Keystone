@@ -15,3 +15,11 @@ Thumbs.db
 # Ignore log files
 *.log
 id_ed25519*
+
+# Ignore Python bytecode/cache artifacts
+__pycache__/
+*.py[cod]
+
+# Ignore local Packet Tracer/exported artifacts
+*.pkt
+*.zip

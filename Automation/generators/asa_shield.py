@@ -4,26 +4,32 @@ import sys
 from format_parser import parse_file, detect_format
 
 class ASAInterface:
-    def __init__(self, name, nameif, security_level, ip, mask):
+    def __init__(self, name, nameif, security_level, ip=None, mask=None, ipv6=None, ipv6_mask=64):
         self.name = name
         self.nameif = nameif
         self.security_level = security_level
         self.ip = ip
         self.mask = mask
+        self.ipv6 = ipv6
+        self.ipv6_mask = ipv6_mask
 
     def generate_config(self):
-        return (f"interface {self.name}\n"
-                f" nameif {self.nameif}\n"
-                f" security-level {self.security_level}\n"
-                f" ip address {self.ip} {self.mask}\n"
-                f" no shutdown")
+        cmds = [f"interface {self.name}", f" nameif {self.nameif}", f" security-level {self.security_level}"]
+        if self.ip and self.mask:
+            cmds.append(f" ip address {self.ip} {self.mask}")
+        if self.ipv6:
+            cmds.append(f" ipv6 address {self.ipv6}/{self.ipv6_mask}")
+        cmds.append(" no shutdown")
+        return "\n".join(cmds)
 
 class ASANetworkObject:
-    def __init__(self, name, host=None, subnet=None, mask=None):
+    def __init__(self, name, host=None, subnet=None, mask=None, ipv6_host=None, ipv6_subnet=None):
         self.name = name
         self.host = host
         self.subnet = subnet
         self.mask = mask
+        self.ipv6_host = ipv6_host
+        self.ipv6_subnet = ipv6_subnet
 
     def generate_config(self):
         config = f"object network {self.name}\n"
@@ -31,6 +37,10 @@ class ASANetworkObject:
             config += f" host {self.host}"
         elif self.subnet and self.mask:
             config += f" subnet {self.subnet} {self.mask}"
+        elif self.ipv6_host:
+            config += f" host {self.ipv6_host}"
+        elif self.ipv6_subnet:
+            config += f" subnet {self.ipv6_subnet}"
         return config
 
 class ASANAT:
@@ -133,7 +143,7 @@ def main():
                 for name, iface in r_data.get('access_groups', {}).items():
                     asa.add_access_group(name, iface)
                 
-                print(f"\n--- {asa.hostname} ---")
+                print(f"\n! --- {asa.hostname} ---")
                 print(asa.generate_cli_config())
         except Exception as e:
             print(f"Error: {e}")

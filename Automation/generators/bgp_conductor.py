@@ -13,6 +13,7 @@ class BGPNeighbor:
         self.update_source = update_source # e.g., 'Loopback0'
         self.next_hop_self = next_hop_self
         self.ebgp_multihop = ebgp_multihop # int (2-255)
+        self.is_ipv6 = ':' in str(ip)
 
 class BGPRouter:
     """Represents a router running BGP."""
@@ -39,7 +40,7 @@ class BGPRouter:
             
         lines.append(" bgp log-neighbor-changes")
         
-        # Neighbors
+        # Neighbors (Global configuration)
         for n in self.neighbors:
             lines.append(f" neighbor {n.ip} remote-as {n.remote_as}")
             if n.description:
@@ -51,9 +52,33 @@ class BGPRouter:
             if n.ebgp_multihop:
                 lines.append(f" neighbor {n.ip} ebgp-multihop {n.ebgp_multihop}")
         
-        # Network statements
-        for net, mask in self.networks:
-            lines.append(f" network {net} mask {mask}")
+        # IPv4 Address Family
+        ipv4_neighbors = [n for n in self.neighbors if not n.is_ipv6]
+        ipv4_networks = [(net, mask) for net, mask in self.networks if ':' not in str(net)]
+        
+        if ipv4_neighbors or ipv4_networks:
+            lines.append(" address-family ipv4")
+            for n in ipv4_neighbors:
+                lines.append(f"  neighbor {n.ip} activate")
+            for net, mask in ipv4_networks:
+                lines.append(f"  network {net} mask {mask}")
+            lines.append(" exit-address-family")
+            
+        # IPv6 Address Family
+        ipv6_neighbors = [n for n in self.neighbors if n.is_ipv6]
+        ipv6_networks = [(net, mask) for net, mask in self.networks if ':' in str(net)]
+        
+        if ipv6_neighbors or ipv6_networks:
+            lines.append(" address-family ipv6")
+            for n in ipv6_neighbors:
+                lines.append(f"  neighbor {n.ip} activate")
+            for net, prefix in ipv6_networks:
+                # For IPv6, mask is usually prefix length
+                if '/' in str(net):
+                    lines.append(f"  network {net}")
+                else:
+                    lines.append(f"  network {net}/{prefix}")
+            lines.append(" exit-address-family")
             
         lines.append(" exit")
         return "\n".join(lines)
@@ -175,7 +200,7 @@ def main():
     full_config = ""
     for router in routers:
         config = router.generate_cli_config()
-        print(f"\n--- {router.hostname} ---")
+        print(f"\n! --- {router.hostname} ---")
         print(config)
         full_config += config + "\n"
         

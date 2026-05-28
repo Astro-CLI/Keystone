@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keystone Web Generator</title>
+  <link rel="stylesheet" href="app.css">
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script defer src="tool_engine.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1 id="tool-title">Generator</h1>
+    <p><a href="../orchestrator.html" style="color:#58a6ff;text-decoration:none;">← Back to Orchestrator</a></p>
+  </header>
+
+  <main class="tool-wrap">
+    <section class="pane">
+      <h3>Input (YAML or JSON)</h3>
+      <textarea id="input"></textarea>
+      <div class="actions">
+        <button class="primary" id="run">Generate</button>
+        <button id="reset">Reset Template</button>
+      </div>
+      <p class="hint">Tip: IPv6 values containing <code>::</code> are safest when quoted in YAML.</p>
+    </section>
+
+    <section class="pane">
+      <h3>Generated CLI</h3>
+      <textarea id="output" readonly></textarea>
+      <div class="actions">
+        <button id="copy">Copy Output</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

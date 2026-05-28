@@ -1,10 +1,13 @@
 import json
 import argparse
 import sys
-from format_parser import parse_file, detect_format
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from format_parser import parse_file
 
 class StaticRoute:
-    """Represents a single static route configuration."""
+    """Represents a single static route configuration (IPv4 or IPv6)."""
     def __init__(self, network, mask, next_hop=None, exit_interface=None, distance=1, description=None):
         self.network = network
         self.mask = mask
@@ -12,9 +15,14 @@ class StaticRoute:
         self.exit_interface = exit_interface
         self.distance = distance # Administrative Distance (Priority)
         self.description = description
+        self.is_ipv6 = self._detect_ipv6()
+    
+    def _detect_ipv6(self):
+        """Detect if this is an IPv6 route (contains colons)"""
+        return ':' in str(self.network)
 
     def generate_command(self):
-        """Generates the Cisco IOS 'ip route' command."""
+        """Generates the Cisco IOS 'ip route' or 'ipv6 route' command."""
         target = ""
         if self.next_hop and self.exit_interface:
             target = f"{self.exit_interface} {self.next_hop}"
@@ -23,7 +31,15 @@ class StaticRoute:
         elif self.exit_interface:
             target = self.exit_interface
         
-        cmd = f"ip route {self.network} {self.mask} {target}"
+        if self.is_ipv6:
+            # IPv6 static routes use prefix notation.
+            prefix = str(self.mask)
+            network = self.network if "/" in str(self.network) else f"{self.network}/{prefix}"
+            cmd = f"ipv6 route {network} {target}".rstrip()
+        else:
+            # IPv4 static routes keep the network + dotted-decimal mask form.
+            cmd = f"ip route {self.network} {self.mask} {target}".rstrip()
+        
         if self.distance != 1:
             cmd += f" {self.distance}"
         
@@ -100,9 +116,9 @@ def interactive_mode():
         router = StaticRouteRouter(hostname)
         
         while True:
-            net = input(f"  Destination Network (e.g., 192.168.1.0) or 'done': ").strip()
+            net = input(f"  Destination Network (IPv4: 192.168.1.0 or IPv6: 2001:db8::) or 'done': ").strip()
             if net.lower() == 'done': break
-            mask = input(f"  Subnet Mask: ").strip()
+            mask = input(f"  Subnet Mask (IPv4: 255.255.255.0 or IPv6 Prefix: 64): ").strip()
             
             print("  Define Next-Hop (provide at least one):")
             nh = input(f"    Next-Hop IP [none]: ").strip() or None
@@ -120,7 +136,7 @@ def interactive_mode():
     return routers
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate Static Route configurations for Cisco IOS/Packet Tracer.")
+    parser = argparse.ArgumentParser(description="Generate Static Route configurations for Cisco IOS/Packet Tracer (IPv4 & IPv6).")
     parser.add_argument("--file", help="Path to inventory file (JSON, YAML, or XML)")
     parser.add_argument("--output", help="Path to save generated CLI config")
     parser.add_argument("--json-out", help="Path to save inventory as JSON")
@@ -139,7 +155,7 @@ def main():
     full_config = ""
     for router in routers:
         config = router.generate_cli_config()
-        print(f"\n--- {router.hostname} ---")
+        print(f"\n! --- {router.hostname} ---")
         print(config)
         full_config += config + "\n"
         

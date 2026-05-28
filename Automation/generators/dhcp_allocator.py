@@ -31,7 +31,7 @@ def main():
         if isinstance(data, dict):
             data = [data]
         for entry in data:
-            print(f"\n--- {entry['hostname']} ---")
+            print(f"\n! --- {entry['hostname']} ---")
             print(generate_dhcp_config(entry['hostname'], entry.get('pools', []), entry.get('excluded', [])))
 
 if __name__ == "__main__":
