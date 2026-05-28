@@ -3,35 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Keystone Web Generator</title>
+  <title>Keystone Generator — Standalone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="app.css">
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script defer src="tool_engine.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <h1 id="tool-title">Generator</h1>
-    <p><a href="../orchestrator.html" style="color:#58a6ff;text-decoration:none;">← Back to Orchestrator</a></p>
-  </header>
-
-  <main class="tool-wrap">
-    <section class="pane">
-      <h3>Input (YAML or JSON)</h3>
-      <textarea id="input"></textarea>
-      <div class="actions">
-        <button class="primary" id="run">Generate</button>
-        <button id="reset">Reset Template</button>
+  <div class="standalone-app">
+    <!-- ─── Top Bar ─── -->
+    <header class="topbar" aria-label="Standalone Generator Navigation">
+      <div class="topbar-left">
+        <h1 id="tool-title" class="brand-name">Generator</h1>
+        <span class="pane-badge" id="tool-status">Browser-Native</span>
       </div>
-      <p class="hint">Tip: IPv6 values containing <code>::</code> are safest when quoted in YAML.</p>
-    </section>
-
-    <section class="pane">
-      <h3>Generated CLI</h3>
-      <textarea id="output" readonly></textarea>
-      <div class="actions">
-        <button id="copy">Copy Output</button>
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 12px;">
+        <button id="theme-toggle" class="action-btn" title="Toggle Light/Dark Theme" style="height: 34px; width: 34px; padding: 0; justify-content: center;">
+          <span class="theme-icon">🌙</span>
+        </button>
+        <a class="back-link" href="../orchestrator.html">← Back to Orchestrator</a>
       </div>
-    </section>
-  </main>
+    </header>
+
+    <!-- ─── Body Workspace ─── -->
+    <main class="tool-wrap">
+      <!-- Input Pane -->
+      <section class="pane" id="editor-pane" aria-label="YAML/JSON Input Editor">
+        <div class="pane-header">
+          <h3>Input Configuration <span class="label-dim">(YAML / JSON)</span></h3>
+          <div class="pane-header-badges">
+            <span id="input-status-badge" class="badge status-empty">Empty</span>
+            <span class="badge" id="line-count">0 lines</span>
+          </div>
+        </div>
+        <div class="pane-body">
+          <textarea id="input" placeholder="# Enter YAML or JSON configuration..." spellcheck="false" aria-label="Input editor text area"></textarea>
+        </div>
+        <div class="pane-footer">
+          <div class="actions">
+            <button class="primary" id="run" title="Generate config (Ctrl+Enter)">
+              <span>▶</span> Generate <span class="kbd">Ctrl+Enter</span>
+            </button>
+            <button id="reset" title="Reset editor to default template">
+              <span>↻</span> Reset Template
+            </button>
+          </div>
+          <p class="hint">IPv6 <code>::</code> values safest when quoted in YAML</p>
+        </div>
+      </section>
+
+      <!-- Output Pane -->
+      <section class="pane" id="output-pane" aria-label="Generated Cisco IOS CLI Output">
+        <div class="pane-header">
+          <div class="pane-tabs">
+            <button class="pane-tab-btn active" data-tab="cli" title="View Cisco IOS CLI commands">Cisco IOS CLI</button>
+            <button class="pane-tab-btn" data-tab="ptbuilder" title="View JS code to run in Packet Tracer Builder">PT-Builder JS</button>
+          </div>
+          <span class="badge" id="output-status">Idle</span>
+        </div>
+        <div class="pane-body">
+          <textarea id="output" readonly placeholder="! Generated Cisco CLI configuration will appear here..." aria-label="Generated configuration output"></textarea>
+          <textarea id="output-ptbuilder" readonly placeholder="// Generated PT-Builder JavaScript script will appear here..." aria-label="Generated PT-Builder output" style="display: none; font-family: var(--font-mono);"></textarea>
+        </div>
+        <div class="pane-footer">
+          <div class="actions">
+            <button id="copy" title="Copy generated config to clipboard">
+              <span>📋</span> Copy Output Configuration
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast alerts -->
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
 </body>
 </html>

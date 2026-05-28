@@ -1,4 +1,52 @@
-# PT Scripting Troubleshooting Guide
+# Troubleshooting Guide
+
+## Python GUI Issues
+
+### "ModuleNotFoundError: No module named 'PyQt6'"
+
+**Cause:** PyQt6 is not installed.
+
+**Solution:**
+```bash
+pip install PyQt6
+# Or on some systems:
+pip3 install PyQt6
+```
+
+### "ModuleNotFoundError: No module named 'yaml'"
+
+**Cause:** PyYAML is not installed.
+
+**Solution:**
+```bash
+pip install pyyaml
+```
+
+### GUI shows "Unknown property" warnings in terminal
+
+**Cause:** Qt's internal Fusion stylesheet triggers harmless "Unknown property" warnings for CSS properties it doesn't implement (e.g., `filter`, `overflow`).
+
+**Solution:** These are **normal and harmless**. The GUI suppresses them automatically via `qInstallMessageHandler`. If you see them, your GUI is working correctly.
+
+### GUI has overlapping elements or wrong spacing
+
+**Cause:** Using CSS `margin` on widgets inside a `QSplitter`, or stacking widgets with `show()`/`hide()` instead of `QStackedWidget`.
+
+**Solution:** Ensure the GUI uses `QStackedWidget` for tabbed content and layout `setContentsMargins()` instead of CSS `margin` on splitter children. If you see overlaps, check that margins are not set directly on splitter pane widgets.
+
+### "generate_pt_builder_script() not found"
+
+**Cause:** Running an old version of the codebase before `pt_builder_gen.py` was created.
+
+**Solution:** Ensure you have `tools/pt_builder_gen.py` from the latest commit. This file contains `generate_pt_builder_script()` which produces PT-Builder output matching the JS SPA.
+
+### Sidebar search doesn't filter generators
+
+**Cause:** The search function may not be connected if running a modified or incomplete build.
+
+**Solution:** Verify `KeystoneGUI.py` has the `_filter_tools()` method and that `search.textChanged` is connected to it. Default build should work on first run.
+
+---
 
 ## Script Execution Issues
 
@@ -418,6 +466,45 @@ function main() {
         dprint("=== END ===");
     }
 }
+```
+
+---
+
+## PT-Builder Parity Issues
+
+### Python PT-Builder output differs from JS output
+
+**Cause:** `extract_device_configs()` or `generate_pt_builder_script()` may have filtering or formatting differences between the Python (`pt_builder_gen.py`) and JS (`tool_engine.js`) implementations.
+
+**Solutions:**
+1. Run the parity test suite:
+   ```bash
+   python3 tools/pt_file_builder_tests.py
+   ```
+
+2. Check that `extract_device_configs()` in `pt_builder_gen.py` does NOT filter lines:
+   - All lines should be kept (blanks, `!` comments, topology summary)
+   - Only lines matching device markers (`hostname`, `Building configuration...`) control device boundaries
+   - No summary-detection stop logic
+
+3. Check that PC IP detection operates at the **device level**, not the interface level:
+   - `configurePcIp()` should only be called when `d.get('dhcp')` or `d.get('ip')` is set on the device dict
+   - Interface-level `dhcp`/`ip`/`mask`/`gateway` should NOT trigger `configurePcIp()`
+
+4. Check that the full topology template has exactly 12 devices and 12 links.
+
+### Generated .pkt file doesn't open in Packet Tracer
+
+**Cause:** PTBuilder generates a text-based script, not a binary `.pkt` file. You must run the script inside Packet Tracer's scripting environment.
+
+**Solution:**
+```bash
+# 1. Generate the PT-Builder script
+python3 tools/pt_builder_gen.py --topology topology.yaml --output build_script.js
+
+# 2. In Packet Tracer: Extensions -> Scripting -> Edit File Script Module
+# 3. Paste build_script.js
+# 4. Click Run
 ```
 
 ---

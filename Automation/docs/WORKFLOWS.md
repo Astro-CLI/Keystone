@@ -1,10 +1,63 @@
-# 📋 All Workflows & Use Patterns
+# All Workflows & Use Patterns
 
 This document covers every workflow in Keystone. Pick the one that matches your goal.
 
 ---
 
-## 🔄 Workflow 1: Extract → Modify → Rebuild
+## Workflow 0: GUI-Based Generation (Python Desktop)
+
+**Goal:** Generate CLI and PT-Builder output using the point-and-click desktop GUI.
+
+**Time:** 2 minutes
+
+**Steps:**
+
+```bash
+# 1. Launch the GUI
+python3 KeystoneGUI.py
+```
+
+2. Select a generator from the sidebar (collapsible categories: Routing, Services, Network Design, Address Planning)
+3. Use the search bar to filter generators
+4. Edit the YAML template in the editor pane
+5. Click **Generate** (or press Ctrl+Enter)
+6. Switch between **CLI** and **PT-Builder** output tabs
+7. Copy output to clipboard or **Export** as `.yaml`/`.txt` file
+
+**GUI Layout:**
+- **Top bar**: Generate, Reset, Import/Export buttons
+- **Sidebar**: Search + collapsible categories with 13 generator tools
+- **Editor**: YAML template for the selected tool
+- **Output**: Dual-tabbed (CLI commands + PT-Builder script)
+- **Status bar**: Ready / Generated / Error feedback
+
+**What you can do:**
+- Generate CLI commands for any of the 13 protocol generators
+- Generate PT-Builder Python scripts for `.pkt` creation
+- Import existing YAML topologies for modification
+- Export generated CLI or PT-Builder output
+- Full Topology tool: 12 devices, 12 links, multi-protocol in one click
+
+---
+
+## Workflow 0b: Browser SPA Generation
+
+**Goal:** Same as Workflow 0 but in a browser.
+
+**Time:** 2 minutes
+
+**Steps:**
+
+```bash
+# Open orchestrator.html in any browser
+open orchestrator.html
+```
+
+Same 13 tools, same CLI/PT-Builder dual output, cyber-obsidian design.
+
+---
+
+## Workflow 1: Extract -> Modify -> Rebuild
 
 **Goal:** Extract an existing topology, modify it, and rebuild it.
 
@@ -459,53 +512,57 @@ python3 tools/format_parser.py configs_topology.yaml --output xml
 
 ---
 
-## 🔗 Workflow Comparison
+## Workflow Comparison
 
 | Workflow | Extract | Modify | Generate | Deploy | Time | Use Case |
 |----------|---------|--------|----------|--------|------|----------|
+| 0. GUI Generation | — | ✅ GUI | CLI+PT | Copy | 2 min | Quick generation |
+| 0b. Browser SPA | — | ✅ Web | CLI+PT | Copy | 2 min | Web-based gen |
 | 1. Extract/Modify/Rebuild | ✅ PT | ✅ YAML | CLI | PT | 15 min | Existing labs |
-| 2. YAML → main.js | — | ✅ YAML | main.js | PT | 5 min | Template-based |
+| 2. YAML -> main.js | — | ✅ YAML | main.js | PT | 5 min | Template-based |
 | 3. Export Topology | ✅ Live | — | YAML | Copy | 3 min | Quick export |
 | 4. Create .pkt | — | ✅ File | .pkt file | Standalone | 5 min | Batch creation |
 | 5. Discover APIs | — | — | Report | Console | 10 min | Debugging |
 | 6. Deep Probe | — | — | Report | Console | 15 min | API research |
 | 7. Multi-Protocol | — | ✅ YAML | Multi-gen | PT | 20 min | Complex labs |
 | 8. CI/CD | ✅ Git | ✅ Git | Artifact | Download | Setup | Distribution |
-| 9. Batch Create | — | Script | 50× .pkt | Download | 5 min | 100s of labs |
+| 9. Batch Create | — | Script | 50x .pkt | Download | 5 min | 100s of labs |
 | 10. Format Conv. | — | ✅ Format | Multi-format | File | 2 min | Interop |
 
 ---
 
-## 🎯 Pick Your Workflow
+## Pick Your Workflow
+
+**I want to generate configs quickly:**
+- Click a button -> Use **Workflow 0** (GUI) or **Workflow 0b** (Browser SPA)
 
 **I have a live topology in PT and want to:**
-- Export it → Use **Workflow 3** (Live Export)
-- Modify it → Use **Workflow 1** (Extract/Modify/Rebuild)
+- Export it -> Use **Workflow 3** (Live Export)
+- Modify it -> Use **Workflow 1** (Extract/Modify/Rebuild)
 
 **I have a YAML topology definition and want to:**
-- Deploy it to PT → Use **Workflow 2** (YAML → main.js)
-- Create a .pkt file → Use **Workflow 4** (Create .pkt)
-- Generate protocols → Use **Workflow 7** (Multi-Protocol)
+- Deploy it to PT -> Use **Workflow 2** (YAML -> main.js)
+- Create a .pkt file -> Use **Workflow 4** (Create .pkt)
+- Generate protocols -> Use **Workflow 7** (Multi-Protocol)
 
 **I want to:**
-- Distribute labs to 100 students → Use **Workflow 9** (Batch Create)
-- Integrate with CI/CD → Use **Workflow 8** (CI/CD)
-- Convert formats → Use **Workflow 10** (Format Conv.)
+- Distribute labs to 100 students -> Use **Workflow 9** (Batch Create)
+- Integrate with CI/CD -> Use **Workflow 8** (CI/CD)
+- Convert formats -> Use **Workflow 10** (Format Conv.)
 
 **I need to:**
-- Debug API issues → Use **Workflow 5** (API Probe)
-- Find hidden functions → Use **Workflow 6** (Deep Probe)
+- Debug API issues -> Use **Workflow 5** (API Probe)
+- Find hidden functions -> Use **Workflow 6** (Deep Probe)
 
 ---
 
-## 📚 For More Information
+## For More Information
 
-- **Getting Started:** [docs/GETTING_STARTED.md](GETTING_STARTED.md)
-- **All Generators:** [docs/GENERATORS_GUIDE.md](GENERATORS_GUIDE.md)
-- **API Reference:** [docs/PT_SCRIPTING_API.md](PT_SCRIPTING_API.md)
-- **Architecture:** [docs/ARCHITECTURE.md](ARCHITECTURE.md)
-- **Troubleshooting:** [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- **Getting Started:** `docs/GETTING_STARTED.md`
+- **All Generators:** `docs/GENERATORS_GUIDE.md`
+- **API Reference:** `docs/PT_API_DEEP_REFERENCE.md`
+- **Troubleshooting:** `docs/TROUBLESHOOTING_GUIDE.md`
 
 ---
 
-**Ready to pick a workflow? Start with [docs/GETTING_STARTED.md](GETTING_STARTED.md)!** 🚀
+**Ready to pick a workflow? Start with `python3 KeystoneGUI.py` or `docs/GETTING_STARTED.md`!**

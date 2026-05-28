@@ -1,10 +1,10 @@
-# 🎛️ Generators Guide — All 12 Protocol Generators
+# Generators Guide -- All 13 Protocol Generators
 
-Keystone includes 12 specialized generators for different network protocols and functions. This guide covers all of them.
+Keystone includes 13 specialized generators for different network protocols and functions. You can use them via the Python GUI, browser SPA, or CLI.
 
 ---
 
-## 📚 Quick Reference
+## Quick Reference
 
 | Generator | Protocol | Purpose | Input | Output |
 |-----------|----------|---------|-------|--------|
@@ -16,16 +16,28 @@ Keystone includes 12 specialized generators for different network protocols and 
 | **nat_portal.py** | NAT | Network address translation | Topology YAML | NAT translation rules |
 | **hsrp_sentinel.py** | HSRP | First hop redundancy | Topology YAML | HSRP group config |
 | **ssh_locksmith.py** | SSH | Secure shell | Topology YAML | SSH security config |
-| **vlan_weaver.py** | VLAN | Virtual LANs | Topology YAML | VLAN and trunk config |
+| **vlan_weaver.py** | VLAN | Virtual LANs + SVIs | Topology YAML | VLAN and trunk config |
 | **asa_shield.py** | ASA | Firewall rules | Topology YAML | ASA firewall config |
 | **ip_architect.py** | IP Addressing | Address planning | Network info | IP allocation |
 | **cidr_architect.py** | CIDR | Subnetting | Network specs | CIDR breakdown |
+| **full_topology.py** | Multi-layer | Full topology composer | Topology YAML | Complete CLI + PT-Builder |
 
 ---
 
-## 🚀 Routing Protocols
+## Dual Output
 
-### **ospf_pathmaker.py** — OSPF Routing
+Every generator produces **two outputs**:
+
+- **CLI commands** -- Raw Cisco IOS commands ready to paste or deploy via `main.js`
+- **PT-Builder script** -- Python script using the PTBuilder library to create `.pkt` files programmatically
+
+In the **Python GUI** (`KeystoneGUI.py`) and **browser SPA** (`orchestrator.html`), switch between CLI and PT-Builder tabs to see both outputs.
+
+---
+
+## Routing Protocols
+
+### ospf_pathmaker.py -- OSPF Routing
 
 **What it does:**
 - Generates OSPF configuration blocks
@@ -42,7 +54,6 @@ python3 generators/ospf_pathmaker.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router1
@@ -54,7 +65,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 routing:
   ospf:
@@ -73,7 +83,7 @@ routing:
 
 ---
 
-### **bgp_conductor.py** — BGP Routing
+### bgp_conductor.py -- BGP Routing
 
 **What it does:**
 - Generates BGP configuration
@@ -82,7 +92,6 @@ routing:
 - Configures network announcements
 
 **Usage:**
-
 ```bash
 python3 generators/bgp_conductor.py \
   --topology examples/simple_topology.yaml \
@@ -91,7 +100,6 @@ python3 generators/bgp_conductor.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router1
@@ -101,7 +109,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 routing:
   bgp:
@@ -122,7 +129,7 @@ routing:
 
 ---
 
-### **eigrp_catalyst.py** — EIGRP Routing
+### eigrp_catalyst.py -- EIGRP Routing
 
 **What it does:**
 - Generates EIGRP configuration
@@ -131,7 +138,6 @@ routing:
 - Configures wildcard masks
 
 **Usage:**
-
 ```bash
 python3 generators/eigrp_catalyst.py \
   --topology examples/simple_topology.yaml \
@@ -140,7 +146,6 @@ python3 generators/eigrp_catalyst.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router1
@@ -150,7 +155,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 routing:
   eigrp:
@@ -172,7 +176,7 @@ routing:
 
 ---
 
-### **static_anchor.py** — Static Routes
+### static_anchor.py -- Static Routes
 
 **What it does:**
 - Generates static route commands
@@ -181,7 +185,6 @@ routing:
 - Suggests backup routes
 
 **Usage:**
-
 ```bash
 python3 generators/static_anchor.py \
   --topology examples/simple_topology.yaml \
@@ -190,7 +193,6 @@ python3 generators/static_anchor.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router1
@@ -200,7 +202,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 routing:
   static:
@@ -219,18 +220,18 @@ routing:
 
 ---
 
-## 🌐 Network Services
+## Network Services
 
-### **dhcp_allocator.py** — DHCP Configuration
+### dhcp_allocator.py -- DHCP Configuration
 
 **What it does:**
 - Generates DHCP pools
 - Assigns pool ranges
 - Configures default gateways
 - Sets DNS servers
+- Supports DHCPv6 (IPv6 dual-stack)
 
 **Usage:**
-
 ```bash
 python3 generators/dhcp_allocator.py \
   --topology examples/simple_topology.yaml \
@@ -238,7 +239,6 @@ python3 generators/dhcp_allocator.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: DHCP_Server
@@ -246,7 +246,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 services:
   dhcp:
@@ -269,16 +268,16 @@ services:
 
 ---
 
-### **nat_portal.py** — NAT Configuration
+### nat_portal.py -- NAT Configuration
 
 **What it does:**
 - Generates NAT translations
 - Configures inside/outside interfaces
 - Creates access lists
 - Suggests NAT pool ranges
+- Supports IPv6 NAT (NAT66)
 
 **Usage:**
-
 ```bash
 python3 generators/nat_portal.py \
   --topology examples/simple_topology.yaml \
@@ -288,7 +287,6 @@ python3 generators/nat_portal.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router_NAT
@@ -296,7 +294,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 services:
   nat:
@@ -320,7 +317,7 @@ services:
 
 ---
 
-### **hsrp_sentinel.py** — HSRP Configuration
+### hsrp_sentinel.py -- HSRP Configuration
 
 **What it does:**
 - Generates HSRP groups
@@ -329,7 +326,6 @@ services:
 - Configures standby devices
 
 **Usage:**
-
 ```bash
 python3 generators/hsrp_sentinel.py \
   --topology examples/simple_topology.yaml \
@@ -339,7 +335,6 @@ python3 generators/hsrp_sentinel.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router1
@@ -349,7 +344,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 services:
   hsrp:
@@ -370,16 +364,16 @@ services:
 
 ---
 
-### **ssh_locksmith.py** — SSH Security
+### ssh_locksmith.py -- SSH Security
 
 **What it does:**
 - Generates SSH configuration
 - Creates SSH keys
 - Configures authentication
 - Sets encryption algorithms
+- Supports IPv6 VTY ACL (dual-stack)
 
 **Usage:**
-
 ```bash
 python3 generators/ssh_locksmith.py \
   --topology examples/simple_topology.yaml \
@@ -388,7 +382,6 @@ python3 generators/ssh_locksmith.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Router1
@@ -396,7 +389,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 services:
   ssh:
@@ -420,18 +412,18 @@ services:
 
 ---
 
-## 🏗️ Network Design
+## Network Design
 
-### **vlan_weaver.py** — VLAN Configuration
+### vlan_weaver.py -- VLAN Configuration
 
 **What it does:**
 - Generates VLAN definitions
 - Configures trunk ports
 - Assigns access VLANs
-- Creates VLAN interfaces
+- Creates VLAN interfaces (SVIs)
+- Supports IPv6 SVI addressing
 
 **Usage:**
-
 ```bash
 python3 generators/vlan_weaver.py \
   --topology examples/simple_topology.yaml \
@@ -439,7 +431,6 @@ python3 generators/vlan_weaver.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: Switch1
@@ -447,7 +438,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 vlan:
   - id: 10
@@ -474,7 +464,7 @@ trunk_ports:
 
 ---
 
-### **asa_shield.py** — ASA Firewall
+### asa_shield.py -- ASA Firewall
 
 **What it does:**
 - Generates ASA firewall rules
@@ -483,7 +473,6 @@ trunk_ports:
 - Sets up NAT policies
 
 **Usage:**
-
 ```bash
 python3 generators/asa_shield.py \
   --topology examples/simple_topology.yaml \
@@ -493,7 +482,6 @@ python3 generators/asa_shield.py \
 ```
 
 **Input (YAML):**
-
 ```yaml
 devices:
   - hostname: ASA1
@@ -501,7 +489,6 @@ devices:
 ```
 
 **Output (YAML):**
-
 ```yaml
 firewall:
   zones:
@@ -530,9 +517,9 @@ firewall:
 
 ---
 
-## 🧮 Address Planning
+## Address Planning
 
-### **ip_architect.py** — IP Addressing
+### ip_architect.py -- IP Addressing
 
 **What it does:**
 - Plans IP address schemes
@@ -541,7 +528,6 @@ firewall:
 - Creates address pools
 
 **Usage:**
-
 ```bash
 python3 generators/ip_architect.py \
   --network 10.0.0.0/16 \
@@ -550,7 +536,6 @@ python3 generators/ip_architect.py \
 ```
 
 **Input:**
-
 ```bash
 --network 10.0.0.0/16
 --device-count 10
@@ -558,11 +543,10 @@ python3 generators/ip_architect.py \
 ```
 
 **Output (YAML):**
-
 ```yaml
 addressing_scheme:
   network: 10.0.0.0
-  mask: 255.255.0.0
+  mask: 255.0.0.0
   subnets:
     - subnet: 10.0.0.0
       mask: 255.255.255.0
@@ -581,7 +565,7 @@ addressing_scheme:
 
 ---
 
-### **cidr_architect.py** — CIDR Subnetting
+### cidr_architect.py -- CIDR Subnetting
 
 **What it does:**
 - Performs CIDR calculations
@@ -590,7 +574,6 @@ addressing_scheme:
 - Creates address ranges
 
 **Usage:**
-
 ```bash
 python3 generators/cidr_architect.py \
   --network 192.168.1.0/24 \
@@ -599,14 +582,12 @@ python3 generators/cidr_architect.py \
 ```
 
 **Input:**
-
 ```bash
 --network 192.168.1.0/24
 --subnets 4
 ```
 
 **Output (YAML):**
-
 ```yaml
 cidr_breakdown:
   original: 192.168.1.0/24
@@ -626,44 +607,88 @@ cidr_breakdown:
 
 ---
 
-## 📦 Generator Workflow
+## Multi-Layer Topology Composer
+
+### full_topology.py -- Full Multi-Layer Topology
+
+**What it does:**
+- Generates a complete 12-device enterprise topology in one shot
+- Combines OSPF, EIGRP, BGP, DHCP, NAT, HSRP, SSH, VLANs, IPv6
+- Creates 12 devices (routers, switches, PCs, servers, firewall, laptop)
+- Outputs CLI commands and PT-Builder script
+- Python output matches JS `tool_engine.js` exactly (byte-for-byte parity)
+
+**Usage:**
+```bash
+python3 generators/full_topology.py \
+  --topology examples/simple_topology.yaml \
+  --output full_topology.yaml
+```
+
+**Or use the GUI:**
+```bash
+python3 KeystoneGUI.py
+# Select "Full Topology" from the sidebar
+# Click Generate
+```
+
+**Output includes:**
+- OSPF, EIGRP, BGP routing on designated routers
+- DHCP/DHCPv6 pools on servers
+- NAT translations on border router
+- HSRP gateway redundancy on distribution routers
+- SSH security config on all routers
+- VLANs and SVIs on switches
+- IPv6 dual-stack addressing
+- Topology summary in the last device's config
+
+**Use when:**
+- Building a complete enterprise lab from scratch
+- Need a consistent multi-protocol topology
+- Quick lab generation for testing
+
+---
+
+## Generator Workflow
 
 Typical multi-generator usage:
 
 ```
-┌─────────────────────────┐
-│  Base Topology YAML     │
-│  (devices, interfaces)  │
-└──────────┬──────────────┘
-           │
-    ┌──────┴────────────────────────┬──────────────┐
-    │                               │              │
-    ↓                               ↓              ↓
-┌──────────────┐           ┌────────────────┐  ┌─────────────┐
-│ospf_pathmaker│           │dhcp_allocator  │  │nat_portal   │
-│(routing)     │           │(services)      │  │(services)   │
-└──────┬───────┘           └────────┬───────┘  └─────┬───────┘
-       │                            │               │
-       │ (outputs YAML              │ (outputs YAML  │ (outputs YAML
-       │  for OSPF section)         │  for DHCP)     │  for NAT)
-       │                            │               │
-       └─────────────────┬──────────┴───────────────┘
-                         │
-                    ┌────↓─────────────┐
-                    │  Merge all into  │
-                    │  final topology  │
-                    └────┬─────────────┘
-                         │
-                         ↓
-                    ┌──────────────────┐
-                    │ Complete multi-  │
-                    │ protocol YAML    │
-                    └──────────────────┘
+                    +---------------------------+
+                    |  Base Topology YAML       |
+                    |  (devices, interfaces)    |
+                    +------------+--------------+
+                                 |
+            +--------------------+-------------------+----------------+
+            |                                        |                |
+            v                                        v                v
+  +---------------------+                 +------------------+  +-------------+
+  | ospf_pathmaker      |                 | dhcp_allocator   |  | nat_portal  |
+  | (routing)           |                 | (services)       |  | (services)  |
+  +----------+----------+                 +--------+---------+  +------+------+
+             |                                       |                  |
+             | (outputs YAML for OSPF)               | (DHCP)           | (NAT)
+             +------------------+--------------------+------------------+
+                                |
+                     +----------v------------+
+                     |  Merge all into       |
+                     |  final topology YAML  |
+                     +----------+------------+
+                                |
+                     +----------v------------+
+                     |  topology_composer.py  |
+                     |  (CLI commands)        |
+                     +----------+------------+
+                                |
+                     +----------v------------+
+                     |  pt_builder_gen.py     |
+                     |  (PT-Builder script)   |
+                     +------------------------+
 ```
 
 ---
 
-## 🔗 Integration Examples
+## Integration Examples
 
 ### Example 1: OSPF + DHCP Network
 
@@ -684,7 +709,23 @@ python3 tools/yaml_to_mainjs.py mylab.yaml --output main.js
 # Run main.js in PT
 ```
 
-### Example 2: BGP + NAT + Firewall
+### Example 2: Full Topology via GUI
+
+```bash
+# 1. Launch GUI
+python3 KeystoneGUI.py
+
+# 2. Click "Full Topology" in sidebar
+
+# 3. Click Generate (or Ctrl+Enter)
+
+# 4. Copy CLI commands from CLI tab OR
+#    Copy PT-Builder script from PT-Builder tab
+
+# 5. Paste CLI into PT or run PT-Builder to create .pkt
+```
+
+### Example 3: BGP + NAT + Firewall
 
 ```bash
 # 1. BGP routing
@@ -702,7 +743,7 @@ python3 generators/asa_shield.py --topology mylab.yaml
 
 ---
 
-## 🆘 Common Issues
+## Common Issues
 
 **Generator says "Invalid topology format":**
 - Check YAML syntax (indentation, colons)
@@ -716,15 +757,19 @@ python3 generators/asa_shield.py --topology mylab.yaml
 - Don't merge same section twice
 - Plan which generators you'll use first
 
----
-
-## 📚 Learn More
-
-- **Getting Started:** [docs/GETTING_STARTED.md](GETTING_STARTED.md)
-- **All Workflows:** [docs/WORKFLOWS.md](WORKFLOWS.md)
-- **Tools:** [tools/README.md](../tools/README.md)
-- **Scripts:** [scripts/README.md](../scripts/README.md)
+**PT-Builder and CLI outputs differ:**
+- Run `python3 tools/pt_file_builder_tests.py` to check parity
+- Report mismatches as issues
 
 ---
 
-**Next:** Pick generators that match your topology design, then use the tools to deploy! 🚀
+## Learn More
+
+- **Getting Started:** `docs/GETTING_STARTED.md`
+- **All Workflows:** `docs/WORKFLOWS.md`
+- **Tools:** `tools/README.md`
+- **Scripts:** `scripts/README.md`
+
+---
+
+**Next:** Pick generators that match your topology design, then use the GUI or CLI to deploy!

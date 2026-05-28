@@ -3,43 +3,111 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Keystone Orchestrator</title>
+  <title>Keystone — Network Automation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="web/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script defer src="web/tool_engine.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <h1>Keystone Orchestrator</h1>
-    <p>Browser-only network automation toolkit (JavaScript, no Python runtime).</p>
-  </header>
+  <div id="app">
+    <!-- ─── Top Bar ─── -->
+    <header id="topbar" aria-label="Main Navigation">
+      <div class="topbar-left">
+        <button id="sidebar-toggle" aria-label="Toggle sidebar" title="Toggle Sidebar">☰</button>
+        <span id="topbar-title" title="Go to Dashboard">Keystone</span>
+        <span id="topbar-toolname">— Loading...</span>
+      </div>
+      <div id="topbar-spacer"></div>
+      <div id="topbar-actions">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="action-btn" title="Toggle Light/Dark Theme" style="height: 36px; width: 36px; padding: 0; justify-content: center;">
+          <span class="theme-icon">🌙</span>
+        </button>
+        
+        <button class="action-btn" id="action-generate" title="Generate CLI config (Ctrl+Enter)">
+          <span>▶</span> Generate
+        </button>
+        <button class="action-btn" id="action-reset" title="Reset config to default template">
+          <span>↻</span> Reset
+        </button>
+        <button class="action-btn" id="action-copy" title="Copy generated CLI configuration">
+          <span>📋</span> Copy
+        </button>
+      </div>
+    </header>
 
-  <main class="grid">
-    <section>
-      <h2>Routing</h2>
-      <a href="web/ospf_pathmaker.html">OSPF Pathmaker</a>
-      <a href="web/bgp_conductor.html">BGP Conductor</a>
-      <a href="web/eigrp_catalyst.html">EIGRP Catalyst</a>
-      <a href="web/static_anchor.html">Static Anchor</a>
-    </section>
+    <!-- ─── Main Workspace ─── -->
+    <div id="body">
+      <!-- Sidebar navigation containing 12 generators -->
+      <aside id="sidebar" aria-label="Tool Selection">
+        <div class="sidebar-search">
+          <input type="text" id="search-input" placeholder="Search generators..." aria-label="Search tools" spellcheck="false">
+          <button id="search-clear" style="display: none;" title="Clear search">&times;</button>
+        </div>
+        <nav id="tool-list"></nav>
+      </aside>
 
-    <section>
-      <h2>Security</h2>
-      <a href="web/asa_shield.html">ASA Shield</a>
-      <a href="web/ssh_locksmith.html">SSH Locksmith</a>
-      <a href="web/nat_portal.html">NAT Portal</a>
-    </section>
+      <!-- Split-pane editor -->
+      <main id="main">
+        <!-- Dashboard Overview Grid -->
+        <div id="dashboard-view" style="display: none;">
+          <div class="dashboard-hero">
+            <h1>Keystone Network Automation</h1>
+            <p>Select a protocol or utility generator from the sidebar or browse them below to generate Packet Tracer compatible Cisco configurations.</p>
+          </div>
+          <div class="dashboard-cards" id="dashboard-cards-container"></div>
+        </div>
 
-    <section>
-      <h2>Services</h2>
-      <a href="web/dhcp_allocator.html">DHCP Allocator</a>
-      <a href="web/hsrp_sentinel.html">HSRP Sentinel</a>
-    </section>
+        <!-- Input editor pane -->
+        <section id="editor-pane" aria-label="YAML/JSON Input Editor">
+          <div class="pane-header">
+            <span class="pane-label">Configuration Input <span class="label-dim">(YAML / JSON)</span></span>
+            <div class="pane-header-badges">
+              <span id="input-status-badge" class="pane-badge status-empty">Empty</span>
+              <span id="line-count" class="pane-badge">0 lines</span>
+            </div>
+          </div>
+          <div class="pane-body">
+            <textarea id="input" placeholder="# Paste or type YAML or JSON configuration here..." spellcheck="false" aria-label="Input editor text area"></textarea>
+          </div>
+        </section>
 
-    <section>
-      <h2>Utilities</h2>
-      <a href="web/vlan_weaver.html">VLAN Weaver</a>
-      <a href="web/ip_architect.html">IP Architect</a>
-      <a href="web/cidr_architect.html">CIDR Architect</a>
-    </section>
-  </main>
+        <!-- Dynamic dragging splitter -->
+        <div id="divider" title="Drag to resize panes" role="separator" aria-orientation="vertical"></div>
+
+        <!-- Output renderer pane -->
+        <section id="output-pane" aria-label="Generated Cisco IOS CLI Output">
+          <div class="pane-header">
+            <div class="pane-tabs">
+              <button class="pane-tab-btn active" data-tab="cli" title="View Cisco IOS CLI commands">Cisco IOS CLI</button>
+              <button class="pane-tab-btn" data-tab="ptbuilder" title="View JS code to run in Packet Tracer Builder">PT-Builder JS</button>
+            </div>
+            <span id="output-status" class="pane-badge">Idle</span>
+          </div>
+          <div class="pane-body">
+            <textarea id="output" readonly placeholder="! Generated Cisco IOS CLI configuration will appear here..." aria-label="Generated configuration output"></textarea>
+            <textarea id="output-ptbuilder" readonly placeholder="// Generated PT-Builder JavaScript script will appear here..." aria-label="Generated PT-Builder output" style="display: none; font-family: var(--font-mono);"></textarea>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ─── Status Bar ─── -->
+    <footer id="statusbar" aria-label="Status Information">
+      <span id="status-tool">Keystone</span>
+      <span id="status-separator">·</span>
+      <span id="status-category">Automation Engine</span>
+      <span id="status-separator2">·</span>
+      <span id="status-keys">Press Ctrl+Enter to generate config</span>
+      <span id="status-right">
+        <span id="status-saved">All states saved in-browser</span>
+      </span>
+    </footer>
+  </div>
+
+  <!-- ─── Notification container ─── -->
+  <div id="toast-container" role="status" aria-live="polite"></div>
 </body>
 </html>

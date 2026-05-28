@@ -284,4 +284,14 @@ All formats are 100% equivalent—same data, different syntax. YAML just wins on
 
 ---
 
-*Generated with ❤️ to prove YAML superiority*
+---
+
+## Note on GUI Usage
+
+The Python GUI (`KeystoneGUI.py`) and browser SPA (`orchestrator.html`) both accept YAML topology definitions. All 13 generators output YAML-formatted CLI configurations by default, and can also produce PT-Builder Python scripts.
+
+When importing/exporting via the GUI, YAML is the recommended format. The GUI's Import/Export buttons handle `.yaml` files natively.
+
+---
+
+*Generated to prove YAML superiority*

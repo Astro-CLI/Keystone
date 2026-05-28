@@ -1,5 +1,7 @@
 # Packet Tracer Scripting API Reference
 
+> This reference applies to all Keystone interfaces: Python GUI (`KeystoneGUI.py`), browser SPA (`orchestrator.html`), and CLI tools. The PT scripting API is consumed by `main.js` for deployment and by `tools/yaml_to_mainjs.py` for script generation.
+
 This document summarizes the Packet Tracer scripting surface currently observed in Keystone testing. It combines:
 
 - methods documented in the existing Keystone docs
