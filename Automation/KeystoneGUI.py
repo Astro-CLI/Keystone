@@ -271,405 +271,64 @@ TEMPLATES = {
         "      size: 1\n"
     ),
     "Full Topology": (
-        "# Full Topology: Multi-Tier Enterprise Network\n"
-        "# Paste your entire network topology here. Generates CLI config for every\n"
-        "# device plus a PT-Builder JS script (addDevice, addLink, configureIosDevice).\n"
-        "#\n"
-        "# Per device: hostname, model, interfaces, vlans, ospf, eigrp, bgp, routes,\n"
-        "#   dhcp (pools + ipv6_pools), nat, ssh, domain_name\n"
-        "# Per interface: name, ip, mask, ipv6, description, mode, access_vlan,\n"
-        "#   trunk_allowed, nameif, security_level, hsrp (group, ip, priority, preempt), dhcp\n"
-        "# Links array defines physical connections for PT-Builder output.\n"
-        "# This example showcases core / distribution / access layers with BGP, OSPF,\n"
-        "# EIGRP, HSRP, static routes, VLANs, SVIs, DHCP, NAT, SSH, and end devices.\n"
-        "\n"
-        "name: \"Multi-Tier Enterprise Network\"\n"
-        "\n"
+        "# Full Topology: Enterprise 3-Tier Network Mesh\n"
+        "# Optimized for the 7-Step Demo workflow.\n\n"
+        "name: \"Enterprise 3-Tier Mesh\"\n\n"
         "devices:\n"
-        "  # ── Core Layer ──────────────────────────────────────────────\n"
-        "  - hostname: Core-R1\n"
-        "    model: 2911\n"
-        "    domain_name: enterprise.local\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/0\n"
-        "        ip: 10.0.0.1\n"
-        "        mask: 255.255.255.252\n"
-        "        ipv6: \"2001:db8:ff:1::1/64\"\n"
-        "        description: \"P2P to Core-R2\"\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        ip: 10.0.1.1\n"
-        "        mask: 255.255.255.252\n"
-        "        ipv6: \"2001:db8:ff:2::1/64\"\n"
-        "        description: \"P2P to ASA-FW-01 inside\"\n"
-        "      - name: GigabitEthernet0/2\n"
-        "        ip: 172.16.0.1\n"
-        "        mask: 255.255.255.255\n"
-        "        description: \"Loopback0\"\n"
-        "      - name: GigabitEthernet1/0\n"
-        "        ip: 192.168.10.1\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:10::1/64\"\n"
-        "        description: \"Management VLAN\"\n"
-        "      - name: GigabitEthernet2/0\n"
-        "        ip: 203.0.113.1\n"
-        "        mask: 255.255.255.252\n"
-        "        description: \"WAN to ISP\"\n"
-        "    ospf:\n"
-        "      process_id: 1\n"
-        "      router_id: 1.1.1.1\n"
-        "      area: 0\n"
-        "    bgp:\n"
-        "      as: 65001\n"
-        "      router_id: 1.1.1.1\n"
-        "      networks:\n"
-        "        - network: 192.168.0.0\n"
-        "          mask: 255.255.0.0\n"
-        "        - network: 172.16.0.0\n"
-        "          mask: 255.255.255.0\n"
-        "      neighbors:\n"
-        "        - ip: 10.0.0.2\n"
-        "          remote_as: 65001\n"
-        "          update_source: GigabitEthernet0/0\n"
-        "          next_hop_self: true\n"
-        "        - ip: 203.0.113.2\n"
-        "          remote_as: 64515\n"
-        "          ebgp_multihop: 2\n"
-        "    routes:\n"
-        "      - network: 0.0.0.0\n"
-        "        mask: 0.0.0.0\n"
-        "        next_hop: 203.0.113.2\n"
-        "      - network: \"::/0\"\n"
-        "        mask: 0\n"
-        "        next_hop: \"2001:db8:ff:f::1\"\n"
-        "    ssh:\n"
-        "      username: netadmin\n"
-        "      password: s3cur3P@ss!\n"
-        "      key_size: 2048\n"
-        "      ipv6_vty: true\n"
-        "      vty_acl_ipv6: \"2001:db8:10::/32\"\n"
-        "\n"
-        "  - hostname: Core-R2\n"
-        "    model: 2911\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/0\n"
-        "        ip: 10.0.0.2\n"
-        "        mask: 255.255.255.252\n"
-        "        ipv6: \"2001:db8:ff:1::2/64\"\n"
-        "        description: \"P2P to Core-R1\"\n"
-        "        hsrp:\n"
-        "          group: 1\n"
-        "          ip: 10.0.0.3\n"
-        "          priority: 90\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        ip: 10.0.2.1\n"
-        "        mask: 255.255.255.252\n"
-        "        ipv6: \"2001:db8:ff:3::1/64\"\n"
-        "        description: \"P2P to ASA-FW-01 dmz\"\n"
-        "      - name: GigabitEthernet0/2\n"
-        "        ip: 172.16.0.2\n"
-        "        mask: 255.255.255.255\n"
-        "        description: \"Loopback0\"\n"
-        "      - name: GigabitEthernet1/0\n"
-        "        ip: 192.168.10.2\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:10::2/64\"\n"
-        "        description: \"Management VLAN\"\n"
-        "        hsrp:\n"
-        "          group: 10\n"
-        "          ip: 192.168.10.254\n"
-        "          priority: 100\n"
-        "          preempt: true\n"
-        "    ospf:\n"
-        "      process_id: 1\n"
-        "      router_id: 2.2.2.2\n"
-        "      area: 0\n"
-        "    bgp:\n"
-        "      as: 65001\n"
-        "      router_id: 2.2.2.2\n"
-        "      neighbors:\n"
-        "        - ip: 10.0.0.1\n"
-        "          remote_as: 65001\n"
-        "          update_source: GigabitEthernet0/0\n"
-        "    routes:\n"
-        "      - network: 0.0.0.0\n"
-        "        mask: 0.0.0.0\n"
-        "        next_hop: 10.0.0.1\n"
-        "\n"
-        "  # ── Distribution Layer ──────────────────────────────────────\n"
-        "  - hostname: DSW-1\n"
-        "    model: 2960-24TT\n"
-        "    vlans:\n"
-        "      - id: 10\n"
-        "        name: Management\n"
-        "        ip: 192.168.10.253\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:10::253/64\"\n"
-        "      - id: 20\n"
-        "        name: Servers\n"
-        "        ip: 192.168.20.1\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:20::1/64\"\n"
-        "      - id: 30\n"
-        "        name: Data\n"
-        "        ip: 192.168.30.1\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:30::1/64\"\n"
-        "      - id: 40\n"
-        "        name: Voice\n"
-        "        ip: 192.168.40.1\n"
-        "        mask: 255.255.255.0\n"
-        "      - id: 50\n"
-        "        name: Guest\n"
-        "        ip: 192.168.50.1\n"
-        "        mask: 255.255.255.0\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        ip: 192.168.10.252\n"
-        "        mask: 255.255.255.0\n"
-        "        description: \"Uplink to Core (SVI transit)\"\n"
-        "      - name: GigabitEthernet0/2\n"
-        "        mode: trunk\n"
-        "        trunk_allowed: \"10,20,30,40,50\"\n"
-        "        description: \"Trunk to ASW-1\"\n"
-        "    ospf:\n"
-        "      process_id: 1\n"
-        "      router_id: 3.3.3.3\n"
-        "      area: 0\n"
-        "    eigrp:\n"
-        "      as: 100\n"
-        "    dhcp:\n"
-        "      pools:\n"
-        "        - name: DATA_POOL\n"
-        "          network: 192.168.30.0\n"
-        "          mask: 255.255.255.0\n"
-        "          gateway: 192.168.30.1\n"
-        "          dns: 192.168.20.10\n"
-        "        - name: VOICE_POOL\n"
-        "          network: 192.168.40.0\n"
-        "          mask: 255.255.255.0\n"
-        "          gateway: 192.168.40.1\n"
-        "        - name: GUEST_POOL\n"
-        "          network: 192.168.50.0\n"
-        "          mask: 255.255.255.0\n"
-        "          gateway: 192.168.50.1\n"
-        "      ipv6_pools:\n"
-        "        - name: DATA_POOL_V6\n"
-        "          prefix: \"2001:db8:30::/64\"\n"
-        "          dns: \"2001:db8:20::a\"\n"
-        "        - name: GUEST_POOL_V6\n"
-        "          prefix: \"2001:db8:50::/64\"\n"
-        "\n"
-        "  - hostname: DSW-2\n"
-        "    model: 2960-24TT\n"
-        "    vlans:\n"
-        "      - id: 10\n"
-        "        name: Management\n"
-        "        ip: 192.168.10.254\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:10::254/64\"\n"
-        "      - id: 20\n"
-        "        name: Servers\n"
-        "        ip: 192.168.20.2\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:20::2/64\"\n"
-        "      - id: 30\n"
-        "        name: Data\n"
-        "        ip: 192.168.30.2\n"
-        "        mask: 255.255.255.0\n"
-        "        ipv6: \"2001:db8:30::2/64\"\n"
-        "      - id: 40\n"
-        "        name: Voice\n"
-        "        ip: 192.168.40.2\n"
-        "        mask: 255.255.255.0\n"
-        "      - id: 50\n"
-        "        name: Guest\n"
-        "        ip: 192.168.50.2\n"
-        "        mask: 255.255.255.0\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        ip: 192.168.10.251\n"
-        "        mask: 255.255.255.0\n"
-        "        description: \"Uplink to Core (SVI transit)\"\n"
-        "      - name: GigabitEthernet0/2\n"
-        "        mode: trunk\n"
-        "        trunk_allowed: \"10,20,30,40,50\"\n"
-        "        description: \"Trunk to ASW-2\"\n"
-        "    ospf:\n"
-        "      process_id: 1\n"
-        "      router_id: 4.4.4.4\n"
-        "      area: 0\n"
-        "    eigrp:\n"
-        "      as: 100\n"
-        "    dhcp:\n"
-        "      pools:\n"
-        "        - name: DATA_POOL_2\n"
-        "          network: 192.168.31.0\n"
-        "          mask: 255.255.255.0\n"
-        "          gateway: 192.168.31.1\n"
-        "          dns: 192.168.20.10\n"
-        "\n"
-        "  # ── Access Layer ────────────────────────────────────────────\n"
-        "  - hostname: ASW-1\n"
-        "    model: 2960-24TT\n"
-        "    vlans:\n"
-        "      - id: 10\n"
-        "        name: Management\n"
-        "      - id: 30\n"
-        "        name: Data\n"
-        "      - id: 40\n"
-        "        name: Voice\n"
-        "      - id: 50\n"
-        "        name: Guest\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        mode: trunk\n"
-        "        trunk_allowed: \"10,30,40,50\"\n"
-        "        description: \"Uplink to DSW-1\"\n"
-        "      - name: FastEthernet0/1\n"
-        "        mode: access\n"
-        "        access_vlan: 30\n"
-        "        description: \"PC1\"\n"
-        "      - name: FastEthernet0/2\n"
-        "        mode: access\n"
-        "        access_vlan: 30\n"
-        "        description: \"PC2\"\n"
-        "      - name: FastEthernet0/3\n"
-        "        mode: access\n"
-        "        access_vlan: 50\n"
-        "        description: \"Laptop-1 (Guest)\"\n"
-        "\n"
-        "  - hostname: ASW-2\n"
-        "    model: 2960-24TT\n"
-        "    vlans:\n"
-        "      - id: 10\n"
-        "        name: Management\n"
-        "      - id: 20\n"
-        "        name: Servers\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        mode: trunk\n"
-        "        trunk_allowed: \"10,20\"\n"
-        "        description: \"Uplink to DSW-2\"\n"
-        "      - name: FastEthernet0/1\n"
-        "        mode: access\n"
-        "        access_vlan: 20\n"
-        "        description: \"Server-1\"\n"
-        "      - name: FastEthernet0/2\n"
-        "        mode: access\n"
-        "        access_vlan: 20\n"
-        "        description: \"Server-2\"\n"
-        "\n"
-        "  # ── Firewall ────────────────────────────────────────────────\n"
-        "  - hostname: ASA-FW-01\n"
-        "    model: 5506-X\n"
-        "    interfaces:\n"
-        "      - name: GigabitEthernet0/0\n"
-        "        nameif: inside\n"
-        "        security_level: 100\n"
-        "        ip: 10.0.1.2\n"
-        "        mask: 255.255.255.252\n"
-        "        ipv6: \"2001:db8:ff:2::2/64\"\n"
-        "        description: \"Inside to Core-R1\"\n"
-        "      - name: GigabitEthernet0/1\n"
-        "        nameif: dmz\n"
-        "        security_level: 50\n"
-        "        ip: 10.0.2.2\n"
-        "        mask: 255.255.255.252\n"
-        "        ipv6: \"2001:db8:ff:3::2/64\"\n"
-        "        description: \"DMZ to Core-R2\"\n"
-        "      - name: GigabitEthernet0/2\n"
-        "        nameif: outside\n"
-        "        security_level: 0\n"
-        "        ip: 198.51.100.1\n"
-        "        mask: 255.255.255.248\n"
-        "        description: \"Outside to Internet\"\n"
-        "    nat:\n"
-        "      - type: dynamic\n"
-        "        outside_interface: outside\n"
-        "    routes:\n"
-        "      - network: 192.168.0.0\n"
-        "        mask: 255.255.0.0\n"
-        "        next_hop: 10.0.1.1\n"
-        "      - network: \"2001:db8::/32\"\n"
-        "        mask: 0\n"
-        "        next_hop: \"2001:db8:ff:2::1\"\n"
-        "    ssh:\n"
-        "      username: admin\n"
-        "      password: Pa$$w0rd!\n"
-        "      key_size: 2048\n"
-        "\n"
-        "  # ── End Devices ─────────────────────────────────────────────\n"
+        "  # ── CORE LAYER (Triangle) ──\n"
+        "  - hostname: R1\n"
+        "    type: router\n"
+        "    ospf: { process_id: 1, router_id: 1.1.1.1, area: 0 }\n\n"
+        "  - hostname: R2\n"
+        "    type: router\n"
+        "    ospf: { process_id: 1, router_id: 2.2.2.2, area: 0 }\n\n"
+        "  - hostname: R3\n"
+        "    type: router\n"
+        "    ospf: { process_id: 1, router_id: 3.3.3.3, area: 0 }\n\n"
+        "  # ── DISTRIBUTION LAYER (DSW-DSW EtherChannel) ──\n"
+        "  - hostname: DSW1\n"
+        "    type: switch\n"
+        "    vlans: [{ id: 10, name: Users_A }]\n"
+        "  - hostname: DSW2\n"
+        "    type: switch\n"
+        "    vlans: [{ id: 10, name: Users_A }]\n"
+        "  - hostname: DSW3\n"
+        "    type: switch\n"
+        "    vlans: [{ id: 20, name: Users_B }]\n"
+        "  - hostname: DSW4\n"
+        "    type: switch\n"
+        "    vlans: [{ id: 20, name: Users_B }]\n\n"
+        "  # ── ACCESS LAYER (Dual PCs + Server) ──\n"
+        "  - hostname: ASW1\n"
+        "    type: switch\n"
         "  - hostname: PC1\n"
-        "    model: PC-PT\n"
-        "    interfaces:\n"
-        "      - name: FastEthernet0\n"
-        "        dhcp: true\n"
-        "\n"
+        "    type: pc\n"
+        "    ip: 192.168.10.10\n"
+        "    mask: 255.255.255.0\n"
+        "    gateway: 192.168.10.1\n"
         "  - hostname: PC2\n"
-        "    model: PC-PT\n"
-        "    interfaces:\n"
-        "      - name: FastEthernet0\n"
-        "        dhcp: true\n"
-        "\n"
-        "  - hostname: Laptop-1\n"
-        "    model: Laptop-PT\n"
-        "    interfaces:\n"
-        "      - name: FastEthernet0\n"
-        "        dhcp: true\n"
-        "\n"
-        "  - hostname: Server-1\n"
-        "    model: Server-PT\n"
-        "    interfaces:\n"
-        "      - name: FastEthernet0\n"
-        "        ip: 192.168.20.10\n"
-        "        mask: 255.255.255.0\n"
-        "        gateway: 192.168.20.1\n"
-        "\n"
-        "  - hostname: Server-2\n"
-        "    model: Server-PT\n"
-        "    interfaces:\n"
-        "      - name: FastEthernet0\n"
-        "        ip: 192.168.20.11\n"
-        "        mask: 255.255.255.0\n"
-        "        gateway: 192.168.20.1\n"
-        "\n"
+        "    type: pc\n"
+        "    ip: 192.168.10.11\n"
+        "  - hostname: SRV1\n"
+        "    type: server\n"
+        "    ip: 192.168.10.100\n\n"
         "links:\n"
-        "  - source: Core-R1:GigabitEthernet0/0\n"
-        "    target: Core-R2:GigabitEthernet0/0\n"
-        "    type: straight\n"
-        "  - source: Core-R1:GigabitEthernet0/1\n"
-        "    target: ASA-FW-01:GigabitEthernet0/0\n"
-        "    type: straight\n"
-        "  - source: Core-R1:GigabitEthernet1/0\n"
-        "    target: DSW-1:GigabitEthernet0/1\n"
-        "    type: straight\n"
-        "  - source: Core-R2:GigabitEthernet0/1\n"
-        "    target: ASA-FW-01:GigabitEthernet0/1\n"
-        "    type: straight\n"
-        "  - source: Core-R2:GigabitEthernet1/0\n"
-        "    target: DSW-2:GigabitEthernet0/1\n"
-        "    type: straight\n"
-        "  - source: DSW-1:GigabitEthernet0/2\n"
-        "    target: ASW-1:GigabitEthernet0/1\n"
-        "    type: straight\n"
-        "  - source: DSW-2:GigabitEthernet0/2\n"
-        "    target: ASW-2:GigabitEthernet0/1\n"
-        "    type: straight\n"
-        "  - source: ASW-1:FastEthernet0/1\n"
-        "    target: PC1:FastEthernet0\n"
-        "    type: straight\n"
-        "  - source: ASW-1:FastEthernet0/2\n"
-        "    target: PC2:FastEthernet0\n"
-        "    type: straight\n"
-        "  - source: ASW-1:FastEthernet0/3\n"
-        "    target: Laptop-1:FastEthernet0\n"
-        "    type: straight\n"
-        "  - source: ASW-2:FastEthernet0/1\n"
-        "    target: Server-1:FastEthernet0\n"
-        "    type: straight\n"
-        "  - source: ASW-2:FastEthernet0/2\n"
-        "    target: Server-2:FastEthernet0\n"
-        "    type: straight\n"
+        "  # Core Triangle (Requires Modules)\n"
+        "  - { source: \"R1:Se0/0/0\", target: \"R2:Se0/0/0\" }\n"
+        "  - { source: \"R1:Se0/1/0\", target: \"R3:Se0/1/0\" }\n"
+        "  - { source: \"R2:Se0/1/0\", target: \"R3:Se0/2/0\" }\n\n"
+        "  # Core to Distribution\n"
+        "  - { source: \"R1:G0/0\", target: \"DSW1:G0/1\" }\n"
+        "  - { source: \"R1:G0/1\", target: \"DSW2:G0/1\" }\n\n"
+        "  # DSW EtherChannel (Dual Links)\n"
+        "  - { source: \"DSW1:G0/23\", target: \"DSW2:G0/23\" }\n"
+        "  - { source: \"DSW1:G0/24\", target: \"DSW2:G0/24\" }\n\n"
+        "  # Distribution to Access\n"
+        "  - { source: \"DSW1:G0/2\", target: \"ASW1:G0/1\" }\n\n"
+        "  # Access to End Devices\n"
+        "  - { source: \"ASW1:F0/1\", target: \"PC1:F0\" }\n"
+        "  - { source: \"ASW1:F0/2\", target: \"PC2:F0\" }\n"
+        "  - { source: \"ASW1:F0/3\", target: \"SRV1:F0\" }\n"
     ),
 }
 
@@ -741,6 +400,8 @@ class GeneratorTab(QWidget):
         super().__init__(parent)
         self.name = name
         self.script_path = os.path.join(os.path.dirname(__file__), "generators", script_name)
+        self.granular_steps = []
+        self.current_step_idx = 0
         self.init_ui()
 
     def init_ui(self):
@@ -833,6 +494,35 @@ class GeneratorTab(QWidget):
         self.output_stack.addWidget(self.output_cli)
         self.output_stack.addWidget(self.output_pt)
         output_layout.addWidget(self.output_stack)
+
+        # ── Step Navigator ──
+        self.step_nav = QWidget()
+        self.step_nav.setObjectName("step_navigator")
+        self.step_nav.setVisible(False)
+        self.step_nav.setStyleSheet("background: #11111b; border-top: 1px solid #313244;")
+        snl = QHBoxLayout(self.step_nav)
+        snl.setContentsMargins(14, 8, 14, 8)
+        
+        self.btn_prev = QPushButton("\u2190")
+        self.btn_prev.setFixedSize(32, 32)
+        self.btn_prev.clicked.connect(self.prev_step)
+        snl.addWidget(self.btn_prev)
+
+        self.indicator_layout = QHBoxLayout()
+        self.indicator_layout.setSpacing(6)
+        snl.addLayout(self.indicator_layout)
+
+        self.btn_next = QPushButton("\u2192")
+        self.btn_next.setFixedSize(32, 32)
+        self.btn_next.clicked.connect(self.next_step)
+        snl.addWidget(self.btn_next)
+
+        self.step_label = QLabel("Step 1")
+        self.step_label.setObjectName("step_label")
+        self.step_label.setStyleSheet("margin-left: 10px; font-weight: 800; color: #cba6f7;")
+        snl.addWidget(self.step_label)
+        snl.addStretch()
+        output_layout.addWidget(self.step_nav)
 
         splitter.addWidget(editor_widget)
         splitter.addWidget(output_widget)
@@ -1343,71 +1033,91 @@ class KeystoneGUI(QMainWindow):
         self.apply_style()
 
     def format_cli_html(self, cli_text):
-        """Simple HTML formatter for generated Cisco IOS CLI to improve readability."""
+        """Regex-based syntax highlighter for Cisco IOS CLI.
+        Produces HTML with span colorization for comments, commands, IPs, numbers and strings.
+        """
         esc = html.escape(cli_text)
-        lines = esc.splitlines()
-        out_lines = []
-        for ln in lines:
-            s = ln.lstrip()
-            color = C['text_primary']
-            # comment
-            if s.startswith('!') or s.startswith('#'):
-                color = C['text_muted']
-            elif s.startswith('hostname'):
-                color = C['primary']
-            elif s.startswith('interface'):
-                color = C['cat_routing']
-            elif s.startswith('vlan') or s.strip().startswith('vlan'):
-                color = C['cat_services']
-            elif s.startswith('ip route') or s.startswith('ipv6 route') or s.startswith('router') or s.startswith('network'):
-                color = C['cat_routing']
-            elif 'ssh' in s or 'crypto' in s or s.startswith('username'):
-                color = C['cat_security']
-            out_lines.append(f"<div style='color:{color}; white-space:pre; font-family: monospace;'>{ln}</div>")
-        return "<div style='background:%s; padding:8px; border-radius:6px;'>%s</div>" % (C['bg_terminal'], '\n'.join(out_lines))
+        # placeholder storage to avoid nested replacements
+        placeholders = []
+        def store(html_snip):
+            idx = len(placeholders)
+            placeholders.append(html_snip)
+            return f"@@PH{idx}@@"
+
+        text = esc
+        # line comments: starting with ! or #
+        text = re.sub(r'(^|\n)([ \t]*[!#].*)', lambda m: m.group(1) + store(f"<span style='color:{C['text_muted']};'>" + m.group(2) + "</span>"), text)
+        # quoted strings (already escaped -> &quot;...&quot; or &#x27;...&#x27;)
+        text = re.sub(r'(&quot;.*?&quot;|&#x27;.*?&#x27;)', lambda m: store(f"<span style='color:#f472b6;'>{m.group(1)}</span>"), text)
+        # IPv4
+        text = re.sub(r'(\b(?:\d{1,3}\.){3}\d{1,3}\b)', lambda m: store(f"<span style='color:#67e8f9;'>{m.group(1)}</span>"), text)
+        # IPv6 (simple heuristic)
+        text = re.sub(r'([0-9a-fA-F:]+:+[0-9a-fA-F:\/]+)', lambda m: store(f"<span style='color:#7c3aed;'>{m.group(1)}</span>"), text)
+        # numbers
+        text = re.sub(r'(\b\d+\b)', lambda m: store(f"<span style='color:#f59e0b;'>{m.group(1)}</span>"), text)
+        # important commands / keywords
+        keywords = ['hostname','interface','vlan','router','network','ip route','ipv6 route','crypto key generate rsa','ip ssh version','username','line vty','standby','switchport','no shutdown','exit','ip dhcp pool','ipv6 dhcp pool','ip nat']
+        for kw in sorted(keywords, key=lambda x: -len(x)):
+            pattern = re.escape(kw)
+            text = re.sub(r'(?i)(' + pattern + r')', lambda m: store(f"<span style='color:{C['cat_routing']}; font-weight:700;'>{m.group(1)}</span>"), text)
+        # function-like words (e.g., 'description' as descriptor)
+        text = re.sub(r'(?m)^([ \t]*description\b)', lambda m: store(f"<span style='color:{C['text_secondary']}; font-weight:600;'>{m.group(1)}</span>"), text)
+
+        # restore placeholders
+        def restore(match):
+            idx = int(match.group(1))
+            return placeholders[idx]
+        html_out = re.sub(r'@@PH(\d+)@@', restore, text)
+        # wrap lines preserving whitespace
+        return f"<div style='background:{C['bg_terminal']}; padding:8px; border-radius:6px; font-family: monospace; white-space:pre;'>" + html_out + "</div>"
 
     def format_pt_html(self, pt_text):
-        """Simple HTML formatter for PT-Builder JS output."""
+        """Regex-based highlighter for PT-Builder JS output (device/script commands)."""
         esc = html.escape(pt_text)
-        lines = esc.splitlines()
-        out_lines = []
-        for ln in lines:
-            s = ln.lstrip()
-            color = C['text_primary']
-            if s.startswith('//') or s.startswith('/*') or s.startswith('*'):
-                color = C['text_muted']
-            elif s.startswith('addDevice') or 'addDevice(' in s:
-                color = '#07d4ff'  # cyan accent for device adds
-            elif s.startswith('addLink') or 'addLink(' in s:
-                color = C['primary']
-            elif s.startswith('configureIosDevice'):
-                color = C['cat_utilities']
-            out_lines.append(f"<div style='color:{color}; white-space:pre; font-family: monospace;'>{ln}</div>")
-        return "<div style='background:%s; padding:8px; border-radius:6px;'>%s</div>" % (C['bg_input'], '\n'.join(out_lines))
+        placeholders = []
+        def store(html_snip):
+            idx = len(placeholders)
+            placeholders.append(html_snip)
+            return f"@@PH{idx}@@"
+        text = esc
+        # comments // or /* */ (simple)
+        text = re.sub(r'(^|\n)([ \t]*//.*)', lambda m: m.group(1) + store(f"<span style='color:{C['text_muted']};'>{m.group(2)}</span>"), text)
+        text = re.sub(r'(/\*.*?\*/)', lambda m: store(f"<span style='color:{C['text_muted']};'>{m.group(1)}</span>"), text, flags=re.S)
+        # strings
+        text = re.sub(r'(&quot;.*?&quot;|&#x27;.*?&#x27;)', lambda m: store(f"<span style='color:#f472b6;'>{m.group(1)}</span>"), text)
+        # numbers
+        text = re.sub(r'(\b\d+\b)', lambda m: store(f"<span style='color:#f59e0b;'>{m.group(1)}</span>"), text)
+        # function names
+        for fn_color, fn_list in [('#07d4ff',['addDevice']), (C['primary'], ['addLink']), (C['cat_utilities'], ['configureIosDevice'])]:
+            for fn in fn_list:
+                text = re.sub(r'(' + re.escape(fn) + r')(?=\s*\()', lambda m, col=fn_color: store(f"<span style='color:{col}; font-weight:700;'>{m.group(1)}</span>"), text)
+        # JS keywords
+        js_kw = ['var','let','const','function','return']
+        for kw in js_kw:
+            text = re.sub(r'\b' + kw + r'\b', lambda m: store(f"<span style='color:{C['cat_services']};'>{m.group(0)}</span>"), text)
+        html_out = re.sub(r'@@PH(\d+)@@', lambda m: placeholders[int(m.group(1))], text)
+        return f"<div style='background:{C['bg_input']}; padding:8px; border-radius:6px; font-family: monospace; white-space:pre;'>" + html_out + "</div>"
 
     def format_yaml_html(self, yaml_text):
-        """Light YAML highlighter: comments, keys, and values."""
+        """Improved YAML highlighter: keys, values, comments, strings, numbers."""
         esc = html.escape(yaml_text)
-        lines = esc.splitlines()
-        out_lines = []
-        for ln in lines:
-            s = ln.lstrip()
-            color = C['text_primary']
-            if s.startswith('#'):
-                color = C['text_muted']
-            else:
-                # bold keys (simple heuristic: lines containing ':' before any '#')
-                if ':' in s and not s.startswith('-'):
-                    parts = s.split(':', 1)
-                    key = parts[0]
-                    val = parts[1]
-                    out_lines.append(f"<div style='white-space:pre; font-family: monospace;'><span style='color:{C['primary']}; font-weight:700;'>{key}:</span><span style='color:{C['text_secondary']};'>{val}</span></div>")
-                    continue
-                elif s.startswith('- '):
-                    out_lines.append(f"<div style='color:{C['cat_services']}; white-space:pre; font-family: monospace;'>{ln}</div>")
-                    continue
-            out_lines.append(f"<div style='color:{color}; white-space:pre; font-family: monospace;'>{ln}</div>")
-        return "<div style='background:%s; padding:8px; border-radius:6px;'>%s</div>" % (C['bg_input'], '\n'.join(out_lines))
+        placeholders = []
+        def store(html_snip):
+            idx = len(placeholders)
+            placeholders.append(html_snip)
+            return f"@@PH{idx}@@"
+        text = esc
+        # comments
+        text = re.sub(r'(^|\n)([ \t]*#.*)', lambda m: m.group(1) + store(f"<span style='color:{C['text_muted']};'>{m.group(2)}</span>"), text)
+        # quoted strings
+        text = re.sub(r'(&quot;.*?&quot;|&#x27;.*?&#x27;)', lambda m: store(f"<span style='color:#f472b6;'>{m.group(1)}</span>"), text)
+        # keys (simple heuristic)
+        text = re.sub(r'(?m)^(\s*)([\w\-\.\/:]+):', lambda m: m.group(1) + store(f"<span style='color:{C['primary']}; font-weight:700;'>{m.group(2)}</span>") + ":", text)
+        # numbers and IPs
+        text = re.sub(r'(\b(?:\d{1,3}\.){3}\d{1,3}\b)', lambda m: store(f"<span style='color:#67e8f9;'>{m.group(1)}</span>"), text)
+        text = re.sub(r'(\b\d+\b)', lambda m: store(f"<span style='color:{C['cat_services']};'>{m.group(1)}</span>"), text)
+        html_out = re.sub(r'@@PH(\d+)@@', lambda m: placeholders[int(m.group(1))], text)
+        return f"<div style='background:{C['bg_input']}; padding:8px; border-radius:6px; font-family: monospace; white-space:pre;'>" + html_out + "</div>"
 
     def show_tool(self, name):
         self.tool_badge.setText(f"\u2014  {name}")
