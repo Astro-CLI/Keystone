@@ -6,6 +6,7 @@
   <title>Keystone — Network Automation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="web/app.css">
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script defer src="web/tool_engine.js"></script>
@@ -17,22 +18,17 @@
       <div class="topbar-left">
         <button id="sidebar-toggle" aria-label="Toggle sidebar" title="Toggle Sidebar">☰</button>
         <span id="topbar-title" title="Go to Dashboard">Keystone</span>
-        <span id="topbar-toolname">— Loading...</span>
+        <span id="topbar-toolname">— Dashboard</span>
       </div>
       <div id="topbar-spacer"></div>
       <div id="topbar-actions">
-        <!-- Theme Toggle Button -->
-        <button id="theme-toggle" class="action-btn" title="Toggle Light/Dark Theme" style="height: 36px; width: 36px; padding: 0; justify-content: center;">
-          <span class="theme-icon">🌙</span>
-        </button>
-        
         <button class="action-btn" id="action-generate" title="Generate CLI config (Ctrl+Enter)">
           <span>▶</span> Generate
         </button>
         <button class="action-btn" id="action-reset" title="Reset config to default template">
           <span>↻</span> Reset
         </button>
-        <button class="action-btn" id="action-copy" title="Copy generated CLI configuration">
+        <button class="action-btn" id="action-copy" title="Copy active code block">
           <span>📋</span> Copy
         </button>
       </div>
@@ -40,7 +36,7 @@
 
     <!-- ─── Main Workspace ─── -->
     <div id="body">
-      <!-- Sidebar navigation containing 12 generators -->
+      <!-- Sidebar -->
       <aside id="sidebar" aria-label="Tool Selection">
         <div class="sidebar-search">
           <input type="text" id="search-input" placeholder="Search generators..." aria-label="Search tools" spellcheck="false">
@@ -49,65 +45,75 @@
         <nav id="tool-list"></nav>
       </aside>
 
-      <!-- Split-pane editor -->
+      <!-- Main Content -->
       <main id="main">
-        <!-- Dashboard Overview Grid -->
-        <div id="dashboard-view" style="display: none;">
+        <!-- Dashboard View -->
+        <div id="dashboard-view">
           <div class="dashboard-hero">
             <h1>Keystone Network Automation</h1>
-            <p>Select a protocol or utility generator from the sidebar or browse them below to generate Packet Tracer compatible Cisco configurations.</p>
+            <p>Select a protocol or utility generator from the sidebar to begin.</p>
           </div>
           <div class="dashboard-cards" id="dashboard-cards-container"></div>
         </div>
 
-        <!-- Input editor pane -->
-        <section id="editor-pane" aria-label="YAML/JSON Input Editor">
-          <div class="pane-header">
-            <span class="pane-label">Configuration Input <span class="label-dim">(YAML / JSON)</span></span>
-            <div class="pane-header-badges">
-              <span id="input-status-badge" class="pane-badge status-empty">Empty</span>
-              <span id="line-count" class="pane-badge">0 lines</span>
+        <!-- Editor View (Hidden by default) -->
+        <div id="workspace-view" style="display: none; flex: 1; display: flex; width: 100%;">
+          <!-- Input editor pane -->
+          <section id="editor-pane" aria-label="YAML/JSON Input Editor">
+            <div class="pane-header">
+              <span class="pane-label">Input <span class="label-dim">(YAML / JSON)</span></span>
+              <div class="pane-header-badges">
+                <span id="input-status-badge" class="pane-badge status-empty">Empty</span>
+                <span id="line-count" class="pane-badge">0 lines</span>
+              </div>
             </div>
-          </div>
-          <div class="pane-body">
-            <textarea id="input" placeholder="# Paste or type YAML or JSON configuration here..." spellcheck="false" aria-label="Input editor text area"></textarea>
-          </div>
-        </section>
-
-        <!-- Dynamic dragging splitter -->
-        <div id="divider" title="Drag to resize panes" role="separator" aria-orientation="vertical"></div>
-
-        <!-- Output renderer pane -->
-        <section id="output-pane" aria-label="Generated Cisco IOS CLI Output">
-          <div class="pane-header">
-            <div class="pane-tabs">
-              <button class="pane-tab-btn active" data-tab="cli" title="View Cisco IOS CLI commands">Cisco IOS CLI</button>
-              <button class="pane-tab-btn" data-tab="ptbuilder" title="View JS code to run in Packet Tracer Builder">PT-Builder JS</button>
+            <div class="pane-body">
+              <textarea id="input" placeholder="# Paste YAML configuration here..." spellcheck="false" aria-label="Input editor"></textarea>
             </div>
-            <span id="output-status" class="pane-badge">Idle</span>
-          </div>
-          <div class="pane-body">
-            <textarea id="output" readonly placeholder="! Generated Cisco IOS CLI configuration will appear here..." aria-label="Generated configuration output"></textarea>
-            <textarea id="output-ptbuilder" readonly placeholder="// Generated PT-Builder JavaScript script will appear here..." aria-label="Generated PT-Builder output" style="display: none; font-family: var(--font-mono);"></textarea>
-          </div>
-        </section>
+          </section>
+
+          <!-- Splitter -->
+          <div id="divider"></div>
+
+          <!-- Output pane -->
+          <section id="output-pane" aria-label="Generated Output">
+            <div class="pane-header">
+              <div class="pane-tabs">
+                <button class="pane-tab-btn active" data-tab="cli">Cisco IOS CLI</button>
+                <button class="pane-tab-btn" data-tab="ptbuilder">PT-Builder JS</button>
+              </div>
+              <span id="output-status" class="pane-badge">Idle</span>
+            </div>
+            <div class="pane-body">
+              <textarea id="output" readonly placeholder="! CLI output will appear here..." aria-label="CLI output"></textarea>
+              <textarea id="output-ptbuilder" readonly placeholder="// PT script will appear here..." aria-label="PT output" style="display: none;"></textarea>
+            </div>
+            
+            <!-- 7-Step Navigator (For Full Topology) -->
+            <div id="step-navigator" style="display: none;">
+              <button id="step-prev" class="action-btn" title="Previous step">←</button>
+              <div id="step-indicators" style="display: flex; gap: 8px;"></div>
+              <button id="step-next" class="action-btn" title="Next step">→</button>
+              <div id="step-title" style="margin-left: 12px;">Step 1: Core Mesh</div>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
 
     <!-- ─── Status Bar ─── -->
-    <footer id="statusbar" aria-label="Status Information">
+    <footer id="statusbar">
       <span id="status-tool">Keystone</span>
       <span id="status-separator">·</span>
-      <span id="status-category">Automation Engine</span>
+      <span id="status-category">Overview</span>
       <span id="status-separator2">·</span>
-      <span id="status-keys">Press Ctrl+Enter to generate config</span>
-      <span id="status-right">
-        <span id="status-saved">All states saved in-browser</span>
-      </span>
+      <span id="status-keys">Press Ctrl+Enter to generate</span>
+      <div id="status-right">
+        <span id="status-saved">Ready</span>
+      </div>
     </footer>
   </div>
 
-  <!-- ─── Notification container ─── -->
   <div id="toast-container" role="status" aria-live="polite"></div>
 </body>
 </html>

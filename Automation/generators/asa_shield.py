@@ -1,7 +1,7 @@
 import json
 import argparse
 import sys
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 class ASAInterface:
     def __init__(self, name, nameif, security_level, ip=None, mask=None, ipv6=None, ipv6_mask=64):
@@ -80,6 +80,8 @@ class ASARouter:
         self.access_groups = {} # name: interface
 
     def add_interface(self, **kwargs):
+        if 'name' in kwargs:
+            kwargs['name'] = normalize_interface_name(kwargs['name'])
         self.interfaces.append(ASAInterface(**kwargs))
 
     def add_object(self, **kwargs):
@@ -98,19 +100,19 @@ class ASARouter:
         lines = [f"! ASA_Shield Configuration for {self.hostname}", "terminal width 132"]
         
         lines.append("! Interfaces")
-        for i in self.interfaces:
+        for i in normalize_items(self.interfaces):
             lines.append(i.generate_config())
             
         lines.append("! Network Objects")
-        for o in self.objects:
+        for o in normalize_items(self.objects):
             lines.append(o.generate_config())
             
         lines.append("! NAT")
-        for n in self.nats:
+        for n in normalize_items(self.nats):
             lines.append(n.generate_config())
             
         lines.append("! ACLs")
-        for a in self.acls:
+        for a in normalize_items(self.acls):
             lines.append(a.generate_config())
             
         lines.append("! Access Groups")
@@ -126,19 +128,26 @@ def main():
 
     if args.file:
         try:
-            data = parse_file(args.file)
-            if isinstance(data, dict):
-                data = [data]
-            
-            for r_data in data:
-                asa = ASARouter(r_data['hostname'])
-                for i in r_data.get('interfaces', []):
+            data = normalize_entries(parse_file(args.file), preferred_keys=('items', 'devices'))
+            for idx, r_data in enumerate(data):
+                if not isinstance(r_data, dict):
+                    continue
+                asa = ASARouter(entry_name(r_data, idx))
+                for i in normalize_items(r_data.get('interfaces', [])):
+                    if not isinstance(i, dict):
+                        continue
                     asa.add_interface(**i)
-                for o in r_data.get('objects', []):
+                for o in normalize_items(r_data.get('objects', [])):
+                    if not isinstance(o, dict):
+                        continue
                     asa.add_object(**o)
-                for n in r_data.get('nats', []):
+                for n in normalize_items(r_data.get('nats', [])):
+                    if not isinstance(n, dict):
+                        continue
                     asa.add_nat(**n)
-                for a in r_data.get('acls', []):
+                for a in normalize_items(r_data.get('acls', [])):
+                    if not isinstance(a, dict):
+                        continue
                     asa.add_acl_rule(**a)
                 for name, iface in r_data.get('access_groups', {}).items():
                     asa.add_access_group(name, iface)

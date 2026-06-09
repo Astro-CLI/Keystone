@@ -133,24 +133,83 @@ class PTScriptableBuilder:
     
     def _normalize_port(self, port):
         """Convert port notation to PT format"""
-        port_map = {
-            '0/0': 'GigabitEthernet0/1',
-            '0/1': 'GigabitEthernet0/2',
-            '0/2': 'GigabitEthernet0/3',
-            '0/3': 'GigabitEthernet0/4',
-            '1/0': 'GigabitEthernet1/1',
-            '1/1': 'GigabitEthernet1/2',
-            'g0/0': 'GigabitEthernet0/1',
-            'g0/1': 'GigabitEthernet0/2',
-            'f0/0': 'FastEthernet0/1',
-            'f0/1': 'FastEthernet0/2',
-            'inside': 'GigabitEthernet0/1',
-            'outside': 'GigabitEthernet0/2',
-            'dmz': 'GigabitEthernet0/3',
-        }
+        p = str(port).strip()
+        p_lower = p.lower()
         
-        normalized = port.lower().strip()
-        return port_map.get(normalized, f'GigabitEthernet{port}')
+        # Handle specific static names
+        port_map = {
+            'inside': 'GigabitEthernet0/0',
+            'outside': 'GigabitEthernet0/1',
+            'dmz': 'GigabitEthernet0/2',
+        }
+        if p_lower in port_map:
+            return port_map[p_lower]
+            
+        # Match various prefixes and expand them
+        # Order from most specific to least specific
+        
+        # GigabitEthernet / Gi / G
+        m = re.match(r'^gi(?:gabit)?(?:ethernet)?(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"GigabitEthernet{m.group(1)}"
+        m = re.match(r'^g(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"GigabitEthernet{m.group(1)}"
+            
+        # FastEthernet / Fa / F
+        m = re.match(r'^fa(?:st)?(?:ethernet)?(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"FastEthernet{m.group(1)}"
+        m = re.match(r'^f(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"FastEthernet{m.group(1)}"
+            
+        # Serial / Se / S
+        m = re.match(r'^se(?:rial)?(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"Serial{m.group(1)}"
+        m = re.match(r'^s(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"Serial{m.group(1)}"
+            
+        # TenGigabitEthernet / Te
+        m = re.match(r'^te(?:ngigabit)?(?:ethernet)?(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"TenGigabitEthernet{m.group(1)}"
+            
+        # Ethernet / Eth / E
+        m = re.match(r'^eth(?:ernet)?(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"Ethernet{m.group(1)}"
+        m = re.match(r'^e(\d+(?:/\d+)*)$', p, re.IGNORECASE)
+        if m:
+            return f"Ethernet{m.group(1)}"
+            
+        # Loopback / Lo
+        m = re.match(r'^lo(?:opback)?(\d+)$', p, re.IGNORECASE)
+        if m:
+            return f"Loopback{m.group(1)}"
+            
+        # Vlan
+        m = re.match(r'^vlan(\d+)$', p, re.IGNORECASE)
+        if m:
+            return f"Vlan{m.group(1)}"
+            
+        # Tunnel / Tun
+        m = re.match(r'^tun(?:nel)?(\d+)$', p, re.IGNORECASE)
+        if m:
+            return f"Tunnel{m.group(1)}"
+            
+        # Port-channel / Po
+        m = re.match(r'^po(?:rt-channel)?(\d+)$', p, re.IGNORECASE)
+        if m:
+            return f"Port-channel{m.group(1)}"
+
+        # If it is just numbers like 0/0, default to GigabitEthernet
+        if re.match(r'^\d+(?:/\d+)*$', p):
+            return f"GigabitEthernet{p}"
+            
+        return p
 
 
 def main():

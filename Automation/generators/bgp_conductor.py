@@ -1,7 +1,7 @@
 import json
 import argparse
 import sys
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 class BGPNeighbor:
     """Represents a BGP neighbor configuration."""
@@ -10,7 +10,7 @@ class BGPNeighbor:
         self.ip = ip
         self.remote_as = remote_as
         self.description = description
-        self.update_source = update_source # e.g., 'Loopback0'
+        self.update_source = normalize_interface_name(update_source) if update_source else update_source # e.g., 'Loopback0'
         self.next_hop_self = next_hop_self
         self.ebgp_multihop = ebgp_multihop # int (2-255)
         self.is_ipv6 = ':' in str(ip)
@@ -116,16 +116,16 @@ def load_from_file(filepath):
         list: List of BGPRouter objects
     """
     try:
-        data = parse_file(filepath)
-        
-        # Ensure data is a list
-        if isinstance(data, dict):
-            data = [data]
+        data = normalize_entries(parse_file(filepath), preferred_keys=('items', 'devices'))
         
         routers = []
-        for r_data in data:
-            router = BGPRouter(r_data['hostname'], r_data['as_number'], r_data.get('router_id'))
-            for n_data in r_data.get('neighbors', []):
+        for idx, r_data in enumerate(data):
+            if not isinstance(r_data, dict):
+                continue
+            router = BGPRouter(entry_name(r_data, idx), r_data.get('as_number', 65000), r_data.get('router_id'))
+            for n_data in normalize_items(r_data.get('neighbors', [])):
+                if not isinstance(n_data, dict):
+                    continue
                 router.add_neighbor(
                     n_data['ip'], 
                     n_data['remote_as'],
@@ -134,7 +134,9 @@ def load_from_file(filepath):
                     next_hop_self=n_data.get('next_hop_self', False),
                     ebgp_multihop=n_data.get('ebgp_multihop')
                 )
-            for net_data in r_data.get('networks', []):
+            for net_data in normalize_items(r_data.get('networks', [])):
+                if not isinstance(net_data, dict):
+                    continue
                 router.add_network(net_data['network'], net_data['mask'])
             routers.append(router)
         return routers

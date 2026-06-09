@@ -2,13 +2,13 @@ import json
 import ipaddress
 import argparse
 import sys
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 class OSPFInterface:
     """Represents a network interface with OSPF configuration."""
     def __init__(self, name, ip_address=None, subnet_mask=None, area=0, is_passive=False, 
                  auth_type=None, auth_key=None, ipv6_area=None, ipv6_address=None):
-        self.name = name
+        self.name = normalize_interface_name(name)
         self.ip_address = ip_address
         self.subnet_mask = subnet_mask
         self.area = area
@@ -51,7 +51,7 @@ class OSPFRouter:
 
     def add_interface(self, name, ip_address=None, subnet_mask=None, area=0, 
                       is_passive=False, auth_type=None, auth_key=None, ipv6_area=None, ipv6_address=None):
-        self.interfaces.append(OSPFInterface(name, ip_address, subnet_mask, area, 
+        self.interfaces.append(OSPFInterface(normalize_interface_name(name), ip_address, subnet_mask, area, 
                                             is_passive, auth_type, auth_key, ipv6_area, ipv6_address))
 
     def generate_cli_config(self):
@@ -151,17 +151,19 @@ class OSPFRouter:
 def load_from_file(filepath):
     """Loads router configurations from JSON, YAML, or XML file."""
     try:
-        data = parse_file(filepath)
-        if isinstance(data, dict):
-            data = [data]
+        data = normalize_entries(parse_file(filepath), preferred_keys=('items', 'devices'))
         
         routers = []
-        for r_data in data:
-            router = OSPFRouter(r_data['hostname'], r_data['router_id'], 
+        for idx, r_data in enumerate(data):
+            if not isinstance(r_data, dict):
+                continue
+            router = OSPFRouter(entry_name(r_data, idx), r_data.get('router_id', '1.1.1.1'),
                                 r_data.get('process_id', 1),
                                 r_data.get('use_interface_config', False),
                                 r_data.get('ipv6_process_id'))
-            for i_data in r_data.get('interfaces', []):
+            for i_data in normalize_items(r_data.get('interfaces', [])):
+                if not isinstance(i_data, dict):
+                    continue
                 router.add_interface(
                     i_data['name'], 
                     i_data.get('ip_address'), 
@@ -248,4 +250,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

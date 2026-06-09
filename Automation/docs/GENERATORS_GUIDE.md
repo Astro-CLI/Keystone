@@ -616,7 +616,7 @@ cidr_breakdown:
 - Combines OSPF, EIGRP, BGP, DHCP, NAT, HSRP, SSH, VLANs, IPv6
 - Creates 12 devices (routers, switches, PCs, servers, firewall, laptop)
 - Outputs CLI commands and PT-Builder script
-- Python output matches JS `tool_engine.js` exactly (byte-for-byte parity)
+- **NEW: 7-Step Demo Workflow:** Optimized for video demonstrations, generating distinct code blocks for a logical build sequence (Core -> Modules -> Distribution -> Access -> Addressing -> CLI).
 
 **Usage:**
 ```bash
@@ -629,7 +629,7 @@ python3 generators/full_topology.py \
 ```bash
 python3 KeystoneGUI.py
 # Select "Full Topology" from the sidebar
-# Click Generate
+# Click Generate -> Use the Step Navigator below the output
 ```
 
 **Output includes:**

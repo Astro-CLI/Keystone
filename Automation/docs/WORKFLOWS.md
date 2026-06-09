@@ -89,58 +89,42 @@ python3 tools/topology_composer.py --file configs_topology.yaml
 
 ---
 
-## 🎬 Workflow 2: YAML → Runnable main.js
+## 🎬 Workflow 2: YAML → Runnable main.js (Legacy)
 
-**Goal:** Convert a YAML topology definition into a self-contained Packet Tracer script.
+**Goal:** Convert a YAML topology definition into a self-contained Packet Tracer script using template duplication.
+
+**Note:** This is the older "template-based" workflow. For the new high-level "scratch-built" workflow, see **Workflow 2b**.
+
+---
+
+## 🏗️ Workflow 2b: 7-Step Granular Demo (PTBuilder)
+
+**Goal:** Create a network from scratch using the high-level PTBuilder API in a step-by-step, demo-friendly sequence.
 
 **Time:** 5 minutes
 
 **Steps:**
 
-```bash
-# 1. Have a topology in YAML
-#    (Use examples/simple_topology.yaml as template)
+1. Open **KeystoneGUI.py** or **orchestrator.html**
+2. Select the **Full Topology** tool
+3. Load the 3-Router demo template (default)
+4. Click **Generate**
+5. Use the **Step Navigator** below the output to cycle through the 7 phases:
+    - **STEP 1: Core Mesh** (Spawns routers and links them)
+    - **STEP 2: Hardware Modules** (Installs expansion cards)
+    - **STEP 3: Distribution Layer** (Spawns switches and connects to Core)
+    - **STEP 4: Access Layer** (Spawns PCs and links to switches)
+    - **STEP 5: Host Addressing** (Applies IP settings to PCs)
+    - **STEP 6: Switch CLI** (VLANs, Trunks)
+    - **STEP 7: Router CLI** (OSPF, BGP, Routing)
+6. Copy and paste each code block into Packet Tracer sequentially.
 
-# 2. Generate main.js
-python3 tools/yaml_to_mainjs.py \
-  examples/simple_topology.yaml \
-  --output generated_main.js
+**Output:** A fully functional, multi-tier network built and configured from a blank canvas.
 
-# 3. In Packet Tracer:
-#    - Make sure you have seed devices (one router, one switch, etc.)
-#    - Extensions → Scripting → Edit File Script Module
-#    - Paste generated_main.js
-#    - Click Run
-
-# 4. The script will:
-#    - Spawn devices
-#    - Inject CLI configs
-#    - Print manual link plan
-```
-
-**Output:** Fully configured topology with all devices and configs applied.
-
-**Options:**
-
-```bash
-# Spawn devices only (no config injection)
-python3 tools/yaml_to_mainjs.py file.yaml --no-config
-
-# Skip the manual link plan
-python3 tools/yaml_to_mainjs.py file.yaml --no-link-plan
-
-# Custom layout
-python3 tools/yaml_to_mainjs.py file.yaml \
-  --start-x 100 \
-  --start-y 100 \
-  --spacing-x 150 \
-  --spacing-y 150 \
-  --columns 3
-```
-
-**Key Limitation:** You must have seed devices already on the canvas. The script duplicates from templates, not creates from scratch.
-
-**See also:** [docs/GENERATORS_GUIDE.md](GENERATORS_GUIDE.md) — Advanced generator options
+**Why use this?**
+- Perfect for video demonstrations and teaching.
+- No "seed" devices required; builds from scratch.
+- Logical separation of physical build, hardware setup, and logical config.
 
 ---
 

@@ -7,6 +7,7 @@ file extension or content analysis.
 """
 
 import json
+import re
 import yaml
 import xmltodict
 from pathlib import Path
@@ -108,6 +109,85 @@ def parse_file(filepath):
         raise ValueError(f"Invalid YAML format: {e}")
     except Exception as e:
         raise ValueError(f"Error parsing {format_type.upper()} file: {e}")
+
+
+def normalize_interface_name(name):
+    """
+    Expand common short interface prefixes to full Packet Tracer names.
+    Examples: G0/0 -> GigabitEthernet0/0, Fa0/1 -> FastEthernet0/1, S0/0/0 -> Serial0/0/0.
+    """
+    if name is None:
+        return name
+    text = str(name).strip()
+    if not text:
+        return text
+    if text.startswith(("GigabitEthernet", "FastEthernet", "Serial", "Vlan", "Port-channel", "Loopback")):
+        return text
+    low = text.lower()
+    for prefix, full in (
+        ("gig", "GigabitEthernet"),
+        ("gi", "GigabitEthernet"),
+        ("g", "GigabitEthernet"),
+        ("fast", "FastEthernet"),
+        ("fa", "FastEthernet"),
+        ("f", "FastEthernet"),
+        ("serial", "Serial"),
+        ("ser", "Serial"),
+        ("se", "Serial"),
+        ("s", "Serial"),
+        ("vlan", "Vlan"),
+        ("vl", "Vlan"),
+        ("v", "Vlan"),
+        ("port-channel", "Port-channel"),
+        ("po", "Port-channel"),
+        ("loopback", "Loopback"),
+        ("lo", "Loopback"),
+    ):
+        if low.startswith(prefix):
+            return full + text[len(prefix):]
+    return text
+
+
+def normalize_entries(data, preferred_keys=("devices",)):
+    """
+    Normalize parsed inventory data into a list of dict entries.
+    Accepts a raw list, a top-level dict with a known list key, or a single dict.
+    """
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        for key in preferred_keys:
+            value = data.get(key)
+            if isinstance(value, list):
+                return value
+        for value in data.values():
+            if isinstance(value, list) and value and all(isinstance(item, dict) for item in value):
+                return value
+        return [data]
+    if data is None:
+        return []
+    return [data]
+
+
+def entry_name(entry, index=0, fallback_prefix="unnamed"):
+    """
+    Return the best available human-readable name for an inventory entry.
+    """
+    if isinstance(entry, dict):
+        for key in ("hostname", "name", "_hostname"):
+            value = entry.get(key)
+            if value:
+                return value
+    return f"{fallback_prefix}_{index + 1}"
+
+
+def normalize_items(value):
+    """Normalize a nested inventory field into a list."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    return [value]
 
 
 def _normalize_xml_dict(obj):

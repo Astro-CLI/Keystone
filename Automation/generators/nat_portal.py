@@ -1,6 +1,6 @@
 import json
 import argparse
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 
 class IOSNATRule:
@@ -58,9 +58,11 @@ class IOSNATRouter:
 
     def add_interfaces(self, inside=None, outside=None):
         if inside:
-            self.inside_interfaces.extend(inside if isinstance(inside, list) else [inside])
+            items = inside if isinstance(inside, list) else [inside]
+            self.inside_interfaces.extend([normalize_interface_name(i) for i in items])
         if outside:
-            self.outside_interfaces.extend(outside if isinstance(outside, list) else [outside])
+            items = outside if isinstance(outside, list) else [outside]
+            self.outside_interfaces.extend([normalize_interface_name(i) for i in items])
 
     def generate_cli_config(self):
         lines = [f"! Master NAT/PAT Configuration for {self.hostname}"]
@@ -96,25 +98,34 @@ def main():
     args = parser.parse_args()
     if args.file:
         try:
-            data = parse_file(args.file)
-            if isinstance(data, dict):
-                data = [data]
-            for r_data in data:
-                router = IOSNATRouter(r_data['hostname'], r_data.get('use_nvi', False))
+            data = normalize_entries(parse_file(args.file), preferred_keys=('items', 'devices'))
+            for idx, r_data in enumerate(data):
+                if not isinstance(r_data, dict):
+                    continue
+                router = IOSNATRouter(entry_name(r_data, idx), r_data.get('use_nvi', False))
                 router.add_interfaces(
                     inside=r_data.get('inside_interfaces'),
                     outside=r_data.get('outside_interfaces')
                 )
                 for acl_id, nets in r_data.get('acls', {}).items():
+                    nets = normalize_items(nets)
                     for net in nets:
                         router.add_acl_entry(acl_id, net)
-                for p in r_data.get('pools', []):
+                for p in normalize_items(r_data.get('pools', [])):
+                    if not isinstance(p, dict):
+                        continue
                     router.add_pool(**p)
-                for r in r_data.get('rules', []):
+                for r in normalize_items(r_data.get('rules', [])):
+                    if not isinstance(r, dict):
+                        continue
                     router.add_rule(**r)
-                for r in r_data.get('static_nats', []):
+                for r in normalize_items(r_data.get('static_nats', [])):
+                    if not isinstance(r, dict):
+                        continue
                     router.add_rule(rule_type='static', local_ip=r.get('inside_ip'), global_ip=r.get('outside_ip'))
-                for r in r_data.get('ipv6_nats', []):
+                for r in normalize_items(r_data.get('ipv6_nats', [])):
+                    if not isinstance(r, dict):
+                        continue
                     router.add_rule(rule_type='static', is_ipv6=True, local_ip=r.get('inside_ip'), global_ip=r.get('outside_ip'))
                 print(f"\n! --- {router.hostname} ---")
                 print(router.generate_cli_config())

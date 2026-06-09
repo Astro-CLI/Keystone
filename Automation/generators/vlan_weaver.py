@@ -2,7 +2,7 @@ import json
 import argparse
 import random
 import sys
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name
 
 try:
     import yaml
@@ -13,6 +13,7 @@ except ImportError:
 
 def generate_vlan_config(hostname, vlans):
     lines = [f"! VLAN Configuration for {hostname}"]
+    vlans = [v for v in normalize_entries(vlans, preferred_keys=('vlans',)) if isinstance(v, dict)]
     used_ids = set(v.get('id') for v in vlans if v.get('id'))
     next_id = 10
     svi_lines = []
@@ -24,7 +25,7 @@ def generate_vlan_config(hostname, vlans):
             v_id = next_id
             used_ids.add(v_id)
         lines.append(f"vlan {v_id}")
-        lines.append(f" name {v['name']}")
+        lines.append(f" name {v.get('name', f'VLAN{v_id}')}")
     lines.append("exit")
     for v in vlans:
         v_id = v.get('id')
@@ -52,12 +53,13 @@ def main():
         print("Usage: python3 vlan_weaver.py --file [file.json/file.yaml/file.xml]")
         return
     try:
-        data = parse_file(args.file)
-        if isinstance(data, dict):
-            data = [data]
-        for entry in data:
-            print(f"\n! --- {entry['hostname']} ---")
-            print(generate_vlan_config(entry['hostname'], entry['vlans']))
+        data = normalize_entries(parse_file(args.file), preferred_keys=('items', 'devices'))
+        for idx, entry in enumerate(data):
+            if not isinstance(entry, dict):
+                continue
+            hostname = entry_name(entry, idx)
+            print(f"\n! --- {hostname} ---")
+            print(generate_vlan_config(hostname, entry.get('vlans', [])))
     except Exception as e:
         print(f"Error: {e}")
 

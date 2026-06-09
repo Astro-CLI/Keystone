@@ -1,10 +1,12 @@
 import json
 import argparse
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name, normalize_items
 
 def generate_hsrp_config(hostname, interfaces):
     lines = [f"! HSRP & SVI Configuration for {hostname}"]
-    for iface in interfaces:
+    for iface in normalize_items(interfaces):
+        if not isinstance(iface, dict):
+            continue
         lines.append(f"interface vlan {iface['vlan_id']}")
         
         # IPv4 HSRP
@@ -31,12 +33,13 @@ def main():
     args = parser.parse_args()
 
     if args.file:
-        data = parse_file(args.file)
-        if isinstance(data, dict):
-            data = [data]
-        for entry in data:
-            print(f"\n! --- {entry['hostname']} ---")
-            print(generate_hsrp_config(entry['hostname'], entry['interfaces']))
+        data = normalize_entries(parse_file(args.file), preferred_keys=('items', 'devices'))
+        for idx, entry in enumerate(data):
+            if not isinstance(entry, dict):
+                continue
+            hostname = entry_name(entry, idx)
+            print(f"\n! --- {hostname} ---")
+            print(generate_hsrp_config(hostname, entry.get('interfaces', [])))
 
 if __name__ == "__main__":
     main()

@@ -2,12 +2,12 @@ import json
 import ipaddress
 import argparse
 import sys
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 class EIGRPInterface:
     """Represents a network interface with EIGRP configuration."""
     def __init__(self, name, ip_address=None, subnet_mask=None, is_passive=False, ipv6_enabled=False):
-        self.name = name
+        self.name = normalize_interface_name(name)
         self.ip_address = ip_address
         self.subnet_mask = subnet_mask
         self.is_passive = is_passive
@@ -43,7 +43,7 @@ class EIGRPRouter:
         self.interfaces = []
 
     def add_interface(self, name, ip_address=None, subnet_mask=None, is_passive=False, ipv6_enabled=False):
-        self.interfaces.append(EIGRPInterface(name, ip_address, subnet_mask, is_passive, ipv6_enabled))
+        self.interfaces.append(EIGRPInterface(normalize_interface_name(name), ip_address, subnet_mask, is_passive, ipv6_enabled))
 
     def generate_cli_config(self):
         """Generates Cisco IOS CLI commands for EIGRP (IPv4 and IPv6)."""
@@ -119,17 +119,19 @@ class EIGRPRouter:
 def load_from_file(filepath):
     """Loads router configurations from a JSON, YAML, or XML file."""
     try:
-        data = parse_file(filepath)
-        if isinstance(data, dict):
-            data = [data]
+        data = normalize_entries(parse_file(filepath), preferred_keys=('items', 'devices'))
         
         routers = []
-        for r_data in data:
-            router = EIGRPRouter(r_data['hostname'], r_data['as_number'], 
+        for idx, r_data in enumerate(data):
+            if not isinstance(r_data, dict):
+                continue
+            router = EIGRPRouter(entry_name(r_data, idx), r_data.get('as_number', 100), 
                                 r_data.get('router_id'),
                                 r_data.get('is_stub', False),
                                 r_data.get('ipv6_as_number'))
-            for i_data in r_data.get('interfaces', []):
+            for i_data in normalize_items(r_data.get('interfaces', [])):
+                if not isinstance(i_data, dict):
+                    continue
                 router.add_interface(
                     i_data['name'], 
                     i_data.get('ip_address'), 

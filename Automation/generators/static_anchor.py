@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from format_parser import parse_file
+from format_parser import parse_file, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 class StaticRoute:
     """Represents a single static route configuration (IPv4 or IPv6)."""
@@ -12,7 +12,7 @@ class StaticRoute:
         self.network = network
         self.mask = mask
         self.next_hop = next_hop
-        self.exit_interface = exit_interface
+        self.exit_interface = normalize_interface_name(exit_interface) if exit_interface else exit_interface
         self.distance = distance # Administrative Distance (Priority)
         self.description = description
         self.is_ipv6 = self._detect_ipv6()
@@ -82,14 +82,16 @@ class StaticRouteRouter:
 def load_from_file(filepath):
     """Loads static route configurations from a JSON, YAML, or XML file."""
     try:
-        data = parse_file(filepath)
-        if isinstance(data, dict):
-            data = [data]
+        data = normalize_entries(parse_file(filepath), preferred_keys=('items', 'devices'))
         
         routers = []
-        for r_data in data:
-            router = StaticRouteRouter(r_data['hostname'])
-            for route_data in r_data.get('routes', []):
+        for idx, r_data in enumerate(data):
+            if not isinstance(r_data, dict):
+                continue
+            router = StaticRouteRouter(entry_name(r_data, idx))
+            for route_data in normalize_items(r_data.get('routes', [])):
+                if not isinstance(route_data, dict):
+                    continue
                 router.add_route(
                     route_data['network'],
                     route_data['mask'],

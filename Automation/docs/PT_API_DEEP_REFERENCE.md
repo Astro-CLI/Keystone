@@ -439,47 +439,55 @@ Useful UI-related methods observed in runtime output:
 
 These are mainly for UI inspection and internal tooling.
 
-## 14. Proven creation recipe
+## 14. High-Level Automation API (PTBuilder)
+
+Keystone integrates with the **PTBuilder** extension to provide a clean, high-level JavaScript API for network creation. These functions are the recommended path for all Keystone topology generation.
+
+### Topology Creation
+
+| Function | Signature | Purpose |
+|---|---|---|
+| `addDevice` | `(name, model, x, y)` | Spawns a device at coordinates and sets its hostname. |
+| `addModule` | `(name, model, slot)` | Power-cycles device and installs a hardware module (e.g. HWIC-2T). |
+| `addLink` | `(d1, p1, d2, p2, type)` | Creates a physical connection (straight/cross/serial). |
+
+### Device Configuration
+
+| Function | Signature | Purpose |
+|---|---|---|
+| `configurePcIp` | `(name, dhcp, ip, mask, gw, dns)` | Sets IP parameters for PCs/End devices. |
+| `configureIosDevice` | `(name, commands)` | Injects bulk CLI commands into a Router or Switch. |
+
+### Verified Device Types
+
+| Keyword | PT Model | Note |
+|---|---|---|
+| `router` | `2911` | Standard ISR G2 |
+| `switch` | `2960-24TT` | Standard L2 Catalyst |
+| `pc` | `PC-PT` | Generic End Device |
+| `server` | `Server-PT` | Generic Server |
+| `asa` | `5506-X` | Security Appliance |
+
+## 15. Proven Automation Recipe
+
+The following pattern is used for the **7-Step Granular Workflow** in Keystone:
 
 ```javascript
-function main()
-{
-    var appWindow = ipc.appWindow();
-    var activeFile = appWindow.getActiveFile();
-    var network = ipc.network();
-    var template = network.getDeviceAt(0);
+// STEP 1: Core Mesh
+addDevice("R1", "2911", 400, 100);
+addDevice("R2", "2911", 200, 300);
+addLink("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0", "straight");
 
-    if (template == null) {
-        dprint("No template device found.");
-        return;
-    }
+// STEP 2: Modules
+addModule("R1", "HWIC-2T", "0");
 
-    for (var i = 0; i < 5; i++) {
-        activeFile.duplicateDevice(template);
-        var newDevice = network.getDeviceAt(network.getDeviceCount() - 1);
-        if (newDevice != null) {
-            newDevice.moveToLocationCentered(50 + (i * 200), 100);
-        }
-    }
-}
+// ... subsequent steps for distribution, access, and CLI injection
 ```
 
-## 15. Known limits
+## 16. Known Limits and Best Practices
 
-- no proven `addDevice()`
-- no proven `addLink()`
-- `setName()` is unreliable
-- `java` is unavailable in the tested runtime
-- `Packages` is unavailable in the tested runtime
-- hidden/internal methods may exist, but only the exposed ones should be treated as stable
-
-## 16. Practical recommendations
-
-1. Use `ipc.appWindow().getActiveFile()` as the canonical file entry point.
-2. Use `ipc.network()` to enumerate existing topology.
-3. Use `duplicateDevice()` to create new devices.
-4. Use `moveToLocationCentered()` for visible placement.
-5. Use `getCommandLine()` for CLI automation.
-6. Use `getPortAt()` and `getDescriptor()` for deeper inspection.
-7. Use `dprint()` aggressively while exploring new methods.
+1. **Ordering Matters:** Always `addDevice` before calling `addModule` or `addLink` for that device.
+2. **Module Timing:** `addModule` performs a power-cycle. When using CLI injection, wait for the device to finish "booting" if not using `skipBoot()` logic inside the helper.
+3. **Port Naming:** Use full port names (e.g., `GigabitEthernet0/0`) or use the Keystone `normalize_port()` helper in the generator to ensure compatibility.
+4. **CLI Injection:** For complex configurations, ensure `no`, `enable`, and `conf t` are the first commands sent to clear the initial setup dialog.
 

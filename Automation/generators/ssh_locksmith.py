@@ -1,6 +1,6 @@
 import json
 import argparse
-from format_parser import parse_file, detect_format
+from format_parser import parse_file, detect_format, normalize_entries, entry_name
 
 
 class SSHConfig:
@@ -49,12 +49,13 @@ def main():
     args = parser.parse_args()
     if args.file:
         try:
-            data = parse_file(args.file)
-            if isinstance(data, dict):
-                data = [data]
-            for entry in data:
+            data = normalize_entries(parse_file(args.file), preferred_keys=('items', 'devices'))
+            for idx, entry in enumerate(data):
+                if not isinstance(entry, dict):
+                    continue
+                hostname = entry_name(entry, idx)
                 ssh = SSHConfig(
-                    hostname=entry['hostname'],
+                    hostname=hostname,
                     domain_name=entry.get('domain_name', 'soymsa.local'),
                     username=entry.get('username', 'admin'),
                     password=entry.get('password', 'Cisco123'),

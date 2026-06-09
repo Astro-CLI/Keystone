@@ -2,8 +2,9 @@ import json
 import argparse
 import sys
 import os
+import re
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'tools'))
-from format_parser import parse_file
+from format_parser import parse_file, normalize_entries, entry_name, normalize_interface_name, normalize_items
 
 
 def is_ipv6(s):
@@ -22,8 +23,12 @@ def ip_and_mask_to_network(ip, mask):
 
 
 def gen_full_topology(data):
+    if isinstance(data, list):
+        data = {'devices': data}
+    elif not isinstance(data, dict):
+        data = {}
     name = data.get('name', 'Full Topology')
-    devices = data.get('devices', [])
+    devices = [d for d in normalize_entries(data, preferred_keys=('devices',)) if isinstance(d, dict)]
     output = []
     output.append("! ========================================")
     output.append(f"! Full Topology: {name}")
@@ -31,16 +36,19 @@ def gen_full_topology(data):
     output.append("! ========================================")
     output.append("")
     for d in devices:
-        if not d or not d.get('hostname'):
+        hostname = d.get('hostname') or d.get('_hostname') or d.get('name')
+        if not hostname:
             continue
         lines = []
-        lines.append(f"! --- {d['hostname']} ---")
-        lines.append(f"hostname {d['hostname']}")
+        lines.append(f"! --- {hostname} ---")
+        lines.append(f"hostname {hostname}")
         if d.get('domain_name'):
             lines.append(f"ip domain-name {d['domain_name']}")
         if d.get('vlans'):
             lines.append("! VLANs")
-            for vl in d['vlans']:
+            for vl in normalize_items(d['vlans']):
+                if not isinstance(vl, dict):
+                    continue
                 if vl.get('id'):
                     lines.append(f"vlan {vl['id']}")
                     if vl.get('name'):
@@ -56,8 +64,10 @@ def gen_full_topology(data):
                     lines.append(" no shutdown")
                     lines.append(" exit")
         if d.get('interfaces'):
-            for f in d['interfaces']:
-                lines.append(f"interface {f['name']}")
+            for f in normalize_items(d['interfaces']):
+                if not isinstance(f, dict):
+                    continue
+                lines.append(f"interface {normalize_interface_name(f.get('name'))}")
                 if f.get('description'):
                     lines.append(f" description {f['description']}")
                 if f.get('mode'):
@@ -92,7 +102,9 @@ def gen_full_topology(data):
             if d['ospf'].get('router_id'):
                 lines.append(f" router-id {d['ospf']['router_id']}")
             if d.get('interfaces'):
-                for f in d['interfaces']:
+                for f in normalize_items(d['interfaces']):
+                    if not isinstance(f, dict):
+                        continue
                     if f.get('ip') and f.get('mask'):
                         net = ip_and_mask_to_network(f['ip'], f['mask'])
                         wc = wildcard_from_mask(f['mask'])
@@ -102,7 +114,9 @@ def gen_full_topology(data):
             as_num = d['eigrp'].get('as', 100)
             lines.append(f"router eigrp {as_num}")
             if d.get('interfaces'):
-                for f in d['interfaces']:
+                for f in normalize_items(d['interfaces']):
+                    if not isinstance(f, dict):
+                        continue
                     if f.get('ip') and f.get('mask'):
                         net = ip_and_mask_to_network(f['ip'], f['mask'])
                         wc = wildcard_from_mask(f['mask'])
@@ -123,7 +137,7 @@ def gen_full_topology(data):
                     ras = nbr.get('remote_as', bgp_as)
                     lines.append(f" neighbor {nbr['ip']} remote-as {ras}")
                     if nbr.get('update_source'):
-                        lines.append(f" neighbor {nbr['ip']} update-source {nbr['update_source']}")
+                        lines.append(f" neighbor {nbr['ip']} update-source {normalize_interface_name(nbr['update_source'])}")
                     if nbr.get('next_hop_self'):
                         lines.append(f" neighbor {nbr['ip']} next-hop-self")
                     if nbr.get('ebgp_multihop'):
@@ -132,28 +146,60 @@ def gen_full_topology(data):
         if d.get('routes'):
             for r in d['routes']:
                 tgt = r.get('next_hop', '')
-                if is_ipv6(r['network']):
-                    lines.append(f"ipv6 route {r['network']}/{r['mask']} {tgt}")
+                net = str(r.get('network', '')).strip()
+                mask = r.get('mask', None)
+                # IPv6 route handling: network may already include prefix length (e.g. ::/0)
+                if net and (':' in net):
+                    if '/' in net:
+                        prefix = net
+                    elif mask is not None:
+                        # mask for IPv6 may be numeric (0-128)
+                        prefix = f"{net}/{mask}"
+                    else:
+                        prefix = net
+                    lines.append(f"ipv6 route {prefix} {tgt}")
                 else:
-                    lines.append(f"ip route {r['network']} {r['mask']} {tgt}")
+                    # IPv4 route
+                    lines.append(f"ip route {net} {mask if mask is not None else ''} {tgt}")
         if d.get('dhcp'):
-            for p in d['dhcp'].get('pools', []):
+            for p in normalize_items(d['dhcp'].get('pools', [])):
+                if not isinstance(p, dict):
+                    continue
                 lines.append(f"ip dhcp pool {p['name']}")
                 lines.append(f" network {p['network']} {p['mask']}")
                 lines.append(f" default-router {p['gateway']}")
                 if p.get('dns'):
                     lines.append(f" dns-server {p['dns']}")
                 lines.append(" exit")
-            for p in d['dhcp'].get('ipv6_pools', []):
+            for p in normalize_items(d['dhcp'].get('ipv6_pools', [])):
+                if not isinstance(p, dict):
+                    continue
                 lines.append(f"ipv6 dhcp pool {p['name']}")
                 lines.append(f" prefix-delegation pool {p['prefix']}")
                 if p.get('dns'):
                     lines.append(f" dns-server {p['dns']}")
                 lines.append(" exit")
+        if d.get('type') in ('pc', 'server', 'laptop'):
+            grp = str(d.get('group') or d.get('hostname') or '')
+            m = re.search(r'(\d+)', grp)
+            subnet = min(3, max(1, ((int(m.group(1)) - 1) // 4) + 1)) if m else 1
+            pos = d.get('pos', 0)
+            suffix = 100 if d.get('type') == 'server' else 11 if str(pos) == '0' or str(hostname).startswith('PC1_') else 12 if str(pos) == '1' or str(hostname).startswith('PC2_') else 100
+            ip = d.get('ip') or f"192.168.{subnet}.{suffix}"
+            mask = d.get('mask', '255.255.255.0')
+            gateway = d.get('gateway') or f"192.168.{subnet}.1"
+            dns = d.get('dns') or f"192.168.{subnet}.100"
+            lines.append(f'configurePcIp("{hostname}", false, "{ip}", "{mask}", "{gateway}", "{dns}");')
+            ipv6 = d.get('ipv6') or d.get('ipv6_address') or f"2001:db8:{subnet}::{suffix}/64"
+            ipv6_gw = d.get('ipv6_gateway') or f"2001:db8:{subnet}::1"
+            ipv6_dns = d.get('ipv6_dns') or f"2001:db8:{subnet}::100"
+            lines.append(f'// IPv6: {ipv6} | gw {ipv6_gw} | dns {ipv6_dns}')
         if d.get('nat'):
-            for n in d['nat']:
+            for n in normalize_items(d['nat']):
+                if not isinstance(n, dict):
+                    continue
                 if n.get('type') == 'dynamic':
-                    lines.append(f"ip nat inside source list {n.get('acl_id', '1')} interface {n['outside_interface']} overload")
+                    lines.append(f"ip nat inside source list {n.get('acl_id', '1')} interface {normalize_interface_name(n['outside_interface'])} overload")
         if d.get('ssh'):
             lines.append(f"crypto key generate rsa modulus {d['ssh'].get('key_size', 2048)}")
             lines.append("ip ssh version 2")
@@ -172,7 +218,7 @@ def gen_full_topology(data):
     output.append("")
     output.append("! ========================================")
     output.append("! Topology Summary")
-    output.append(f"! Devices: {sum(1 for d in devices if d and d.get('hostname'))}")
+    output.append(f"! Devices: {sum(1 for d in devices if d.get('hostname') or d.get('_hostname') or d.get('name'))}")
     output.append("! ========================================")
     return "\n\n".join(output)
 
